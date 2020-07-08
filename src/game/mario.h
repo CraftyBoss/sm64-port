@@ -51,4 +51,9 @@ s32 execute_mario_action(UNUSED struct Object *o);
 void init_mario(void);
 void init_mario_from_save_file(void);
 
+// CUSTOM FUNCTION DELCARATIONS
+
+extern struct Object *spawn_cap_object(struct MarioState *m, f32 capSpeed);
+extern void cap_throw_timer(struct MarioState *m);
+
 #endif // MARIO_H

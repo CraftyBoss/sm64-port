@@ -408,6 +408,7 @@ extern const BehaviorScript bhvBigBoulderGenerator[];
 extern const BehaviorScript bhvWingCap[];
 extern const BehaviorScript bhvMetalCap[];
 extern const BehaviorScript bhvNormalCap[];
+extern const BehaviorScript bhvThrownCap[]; // CUSTOM THROWN CAP OBJECT
 extern const BehaviorScript bhvVanishCap[];
 extern const BehaviorScript bhvStar[];
 extern const BehaviorScript bhvStarSpawnCoordinates[];

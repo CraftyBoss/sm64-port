@@ -803,6 +803,11 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
             m->forwardVel *= 0.8f;
             break;
 
+        case ACT_POUNDJUMP:
+            set_mario_y_vel_based_on_fspeed(m, 67.0f, 0.0f);
+            m->forwardVel *= 0.8f;
+            break;
+
         case ACT_FLYING_TRIPLE_JUMP:
             set_mario_y_vel_based_on_fspeed(m, 82.0f, 0.0f);
             break;
@@ -1703,6 +1708,154 @@ void func_sh_8025574C(void) {
 #endif
 
 /**
+ * Custom Function that spawns a cap object at Marios current position.
+ */
+struct Object *spawn_cap_object(struct MarioState *m, f32 capSpeed) {
+
+    struct Object *o;
+    o = spawn_object(m->marioObj, MODEL_MARIOS_CAP, bhvThrownCap);
+
+    vec3f_set(o->header.gfx.scale, 1.5f, 1.0f, 1.5f);
+
+    o->oPosY += (m->action & ACT_FLAG_SHORT_HITBOX) ? 20.0f : 40.0f;
+    o->oForwardVel = capSpeed;
+
+    o->oAction = 1;
+
+    return o;
+
+}
+
+u8 maxThrowTime;
+u8 isMarioHit;
+s16 rotateSpeed;
+f32 latDistCap;
+f32 distCap;
+f32 velToAdd;
+struct Object *capThrown;
+
+void move_cap_towards_mario(struct Object *o) {
+    f32 sp34 = gMarioObject->header.gfx.pos[0] - o->oPosX;
+    f32 sp30 = gMarioObject->header.gfx.pos[1] + 120.0f - o->oPosY;
+    f32 sp2C = gMarioObject->header.gfx.pos[2] - o->oPosZ;
+    s16 sp2A = atan2s(sqrtf(sqr(sp34) + sqr(sp2C)), sp30);
+
+    obj_turn_toward_object(o, gMarioObject, 16, 0x1000);
+    o->oMoveAnglePitch = approach_s16_symmetric(o->oMoveAnglePitch, sp2A, 0x1000);
+    o->oVelY = sins(o->oMoveAnglePitch) * 30.0f;
+    o->oForwardVel = coss(o->oMoveAnglePitch) * 30.0f;
+}
+
+/**
+ * Custom Function that detects when Mario throws his cap, to do a cap throw.
+*/
+void cap_throw_timer(struct MarioState *m) {
+    if(m->flags & MARIO_CAP_THROWN) {
+        if(capThrown != NULL) { 
+            latDistCap = lateral_dist_between_objects(capThrown, m->marioObj);
+            distCap = dist_between_objects(capThrown, m->marioObj);
+
+            s32 i;
+            for(i = 0; i < m->marioObj->numCollidedObjs; i++) {
+                if(m->marioObj->collidedObjs[i] == capThrown && m->capThrowTimer > 10) {
+                    isMarioHit = TRUE;
+                    break;
+                }else {
+                    isMarioHit = FALSE;
+                }
+            }
+
+            if(isMarioHit && m->capThrowTimer < maxThrowTime && m->isCapThrown != TRUE) {
+                m->capThrowTimer = maxThrowTime;
+                m->isCapThrown = TRUE;
+                isMarioHit = FALSE;
+                switch (m->action & ACT_GROUP_MASK)
+                {
+                case ACT_GROUP_MOVING:
+                    if(m->action & ACT_WALKING) {
+                        set_jumping_action(m,ACT_TRIPLE_JUMP,0);
+                    }
+                    break;
+
+                case ACT_GROUP_AIRBORNE:
+                    if(m->action & ACT_JUMP && m->vel[1] < 0) {
+                        set_jumping_action(m,ACT_DOUBLE_JUMP,0);
+                    }
+                    break;
+                
+                default:
+                    break;
+                }
+            }
+
+            if(capThrown->oAction == 2 && !(m->controller->buttonDown & B_BUTTON)) {
+                m->capThrowTimer = maxThrowTime;
+            }
+            
+            if(isMarioHit) {
+                print_text(20,20,"HIT MARIO");
+            }else {
+                print_text(20,20,"MARIO NOT HIT");
+            }
+
+        }
+
+        if(m->capThrowTimer < maxThrowTime) {
+            m->capThrowTimer++;
+            
+            if(capThrown != NULL) {
+                capThrown->oFaceAngleYaw += rotateSpeed;
+                if(capThrown->oForwardVel > 0) {
+                    capThrown->oForwardVel -= 7;
+                }
+            }
+            if((m->capThrowTimer > maxThrowTime - 1) && maxThrowTime <= 120 && (m->controller->buttonDown & B_BUTTON)) {
+                vec3f_set(capThrown->header.gfx.scale, 2.0f, 1.0f, 2.0f);
+                maxThrowTime++;
+                rotateSpeed = 0x2200;
+            }
+
+        }else {
+            if(capThrown != NULL) { 
+                
+                capThrown->oFaceAngleYaw += rotateSpeed;
+                capThrown->oFaceAnglePitch = obj_turn_toward_object(capThrown,m->marioObj,18,100.0f);
+
+                capThrown->oMoveAngleYaw = capThrown->oAngleToMario;
+                capThrown->oMoveAnglePitch = obj_turn_toward_object(capThrown,m->marioObj,18,100.0f);
+                capThrown->oVelY = -(sins(capThrown->oMoveAnglePitch) * 100.0f);
+                capThrown->oForwardVel = 100.0f;
+
+                if(capThrown->oDistanceToMario < 200.0f) {
+
+                    play_sound(SOUND_MARIO_PUNCH_HOO, m->marioObj->header.gfx.cameraToObject);
+                    m->flags |= MARIO_CAP_ON_HEAD;
+
+                    capThrown->activeFlags = 0;
+                    maxThrowTime = 30;
+                    rotateSpeed = 0x2000;
+
+                    m->capThrowTimer = 0;
+                    m->flags &= ~MARIO_CAP_THROWN;
+                }
+            }
+        }
+        
+        switch(m->capThrowTimer) {
+            case 5:
+                play_sound(SOUND_MARIO_PUNCH_YAH, m->marioObj->header.gfx.cameraToObject);
+                velToAdd = m->forwardVel < 10 ? m->forwardVel : 10;
+                capThrown = spawn_cap_object(m,100 + velToAdd);
+                m->marioCap = capThrown;
+                m->flags &= ~MARIO_CAP_ON_HEAD;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+/**
  * Main function for executing Mario's behavior.
  */
 s32 execute_mario_action(UNUSED struct Object *o) {
@@ -1757,6 +1910,7 @@ s32 execute_mario_action(UNUSED struct Object *o) {
 
         sink_mario_in_quicksand(gMarioState);
         squish_mario_model(gMarioState);
+        cap_throw_timer(gMarioState);
         set_submerged_cam_preset_and_spawn_bubbles(gMarioState);
         update_mario_health(gMarioState);
         update_mario_info_for_cam(gMarioState);
@@ -1816,6 +1970,12 @@ void init_mario(void) {
 
     gMarioState->forwardVel = 0.0f;
     gMarioState->squishTimer = 0;
+
+    rotateSpeed = 0x2000;
+    maxThrowTime = 30;
+    gMarioState->capThrowTimer = 0;
+    gMarioState->capThrowToggle = TRUE;
+    gMarioState->isCapThrown = FALSE;
 
     gMarioState->hurtCounter = 0;
     gMarioState->healCounter = 0;

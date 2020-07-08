@@ -300,6 +300,14 @@ void set_mario_initial_cap_powerup(struct MarioState *m) {
     }
 }
 
+void set_mario_initial_throw_state(struct MarioState *m) {
+    if(gCurrLevelNum == LEVEL_BOWSER_1 || gCurrLevelNum == LEVEL_BOWSER_2 || gCurrLevelNum == LEVEL_BOWSER_3) {
+        m->capThrowToggle = FALSE;
+    }else {
+        m->capThrowToggle = TRUE;
+    }
+}
+
 void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg) {
     switch (spawnType) {
         case MARIO_SPAWN_DOOR_WARP:
@@ -359,6 +367,7 @@ void set_mario_initial_action(struct MarioState *m, u32 spawnType, u32 actionArg
     }
 
     set_mario_initial_cap_powerup(m);
+    set_mario_initial_throw_state(m);
 }
 
 void init_mario_after_warp(void) {

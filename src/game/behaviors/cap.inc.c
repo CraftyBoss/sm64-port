@@ -197,6 +197,59 @@ void bhv_normal_cap_init(void) {
     save_file_set_cap_pos(o->oPosX, o->oPosY, o->oPosZ);
 }
 
+void bhv_thrown_cap_init(void) {
+    o->oGravity = 0.0f;
+    o->oFriction = 0.89f;
+    o->oBuoyancy = 0.9f;
+    o->oOpacity = 0xFF;
+}
+
+void bhv_thrown_cap_air_act(void) {
+    s16 sp1E = object_step();
+
+    cap_set_hitbox();
+    obj_attack_collided_from_other_object(o);
+
+    if(sp1E & 2) {
+        o->oAction = 2;
+    }
+
+}
+
+void bhv_thrown_cap_loop(void) {
+    
+    switch (o->oAction) {
+        case 0:
+            thrown_cap_act_0();
+            break;
+        case 1:
+            bhv_thrown_cap_air_act();
+            break;
+
+        default:
+            object_step();
+            break;
+    }
+
+}
+
+void thrown_cap_act_0(void) {
+    s16 sp1E;
+
+    sp1E = object_step();
+    if (sp1E & 0x01) {
+        cap_check_quicksand();
+
+        if (o->oVelY != 0.0f) {
+            o->oCapUnkF4 = 1;
+            o->oVelY = 0.0f;
+            o->oFaceAnglePitch = 0;
+        }
+    }
+
+    cap_set_hitbox();
+}
+
 void normal_cap_set_save_flags(void) {
     save_file_clear_flags(SAVE_FLAG_CAP_ON_GROUND);
 

@@ -373,6 +373,8 @@ void bhv_metal_cap_init(void);
 void bhv_metal_cap_loop(void);
 void bhv_normal_cap_init(void);
 void bhv_normal_cap_loop(void);
+void bhv_thrown_cap_init(void); // CUSTOM THROWN CAP OBJECT
+void bhv_thrown_cap_loop(void); // CUSTOM THROWN CAP OBJECT
 void bhv_vanish_cap_init(void);
 void bhv_collect_star_init(void);
 void bhv_collect_star_loop(void);

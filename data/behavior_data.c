@@ -4590,6 +4590,18 @@ const BehaviorScript bhvNormalCap[] = {
         CALL_NATIVE(bhv_normal_cap_loop),
     END_LOOP(),
 };
+/**
+ * custom behavior script for thrown cap object
+ */
+const BehaviorScript bhvThrownCap[] = {
+    BEGIN(OBJ_LIST_DESTRUCTIVE),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_COMPUTE_ANGLE_TO_MARIO | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_thrown_cap_init),
+    BEGIN_LOOP(),
+        SET_INT(oIntangibleTimer, 0),
+        CALL_NATIVE(bhv_thrown_cap_loop),
+    END_LOOP(),
+};
 
 const BehaviorScript bhvVanishCap[] = {
     BEGIN(OBJ_LIST_LEVEL),

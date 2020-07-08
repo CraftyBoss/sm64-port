@@ -50,7 +50,11 @@ s32 check_common_idle_cancels(struct MarioState *m) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_PUNCHING, 0);
+        if(m->capThrowToggle) {
+            return set_mario_action(m, ACT_THROW_CAP, 0);
+        }else {
+            return set_mario_action(m, ACT_PUNCHING, 0);
+        }
     }
 
     if (m->input & INPUT_Z_DOWN) {
@@ -505,7 +509,11 @@ s32 act_standing_against_wall(struct MarioState *m) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_PUNCHING, 0);
+        if(m->capThrowToggle) {
+            return set_mario_action(m, ACT_THROW_CAP, 0);
+        }else {
+            return set_mario_action(m, ACT_PUNCHING, 0);
+        }
     }
 
     set_mario_animation(m, MARIO_ANIM_STAND_AGAINST_WALL);
@@ -562,7 +570,11 @@ s32 act_crouching(struct MarioState *m) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_PUNCHING, 9);
+        if(m->capThrowToggle) {
+            return set_mario_action(m, ACT_ROLL, 0);
+        }else {
+            return set_mario_action(m, ACT_PUNCHING, 0);
+        }
     }
 
     stationary_ground_step(m);
@@ -634,7 +646,11 @@ s32 act_braking_stop(struct MarioState *m) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_PUNCHING, 0);
+        if(m->capThrowToggle) {
+            return set_mario_action(m, ACT_THROW_CAP, 0);
+        }else {
+            return set_mario_action(m, ACT_PUNCHING, 0);
+        }
     }
 
     if (!(m->input & INPUT_FIRST_PERSON)
@@ -865,7 +881,11 @@ s32 check_common_landing_cancels(struct MarioState *m, u32 action) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_PUNCHING, 0);
+        if(m->capThrowToggle) {
+            return set_mario_action(m, ACT_THROW_CAP, 0);
+        }else {
+            return set_mario_action(m, ACT_PUNCHING, 0);
+        }
     }
 
     return 0;
@@ -1058,6 +1078,10 @@ s32 act_ground_pound_land(struct MarioState *m) {
         return set_mario_action(m, ACT_BUTT_SLIDE, 0);
     }
 
+    if(m->input & INPUT_A_PRESSED) {
+        return set_mario_action(m, ACT_POUNDJUMP, 0);
+    }
+
     landing_step(m, MARIO_ANIM_GROUND_POUND_LANDING, ACT_BUTT_SLIDE_STOP);
     return 0;
 }
@@ -1121,6 +1145,18 @@ s32 check_common_stationary_cancels(struct MarioState *m) {
     return 0;
 }
 
+s32 act_throw_cap(struct MarioState *m) {
+    if(!(m->flags & MARIO_CAP_THROWN)) {
+        
+        m->flags |= MARIO_CAP_THROWN;
+    }
+    set_mario_animation(m, MARIO_ANIM_FIRST_PUNCH_FAST);
+    if(is_anim_at_end(m)) {
+        set_mario_action(m,m->prevAction,0);
+    }
+    return 0;
+}
+
 s32 mario_execute_stationary_action(struct MarioState *m) {
     s32 sp24;
 
@@ -1134,6 +1170,7 @@ s32 mario_execute_stationary_action(struct MarioState *m) {
 
     /* clang-format off */
     switch (m->action) {
+        case ACT_THROW_CAP:               sp24 = act_throw_cap(m);                        break;
         case ACT_IDLE:                    sp24 = act_idle(m);                             break;
         case ACT_START_SLEEPING:          sp24 = act_start_sleeping(m);                   break;
         case ACT_SLEEPING:                sp24 = act_sleeping(m);                         break;

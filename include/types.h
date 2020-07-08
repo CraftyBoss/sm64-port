@@ -322,6 +322,7 @@ struct MarioState
     /*0x80*/ struct Object *usedObj;
     /*0x84*/ struct Object *riddenObj;
     /*0x88*/ struct Object *marioObj;
+    /*0x89*/ struct Object *marioCap; // CUSTOM OBJECT TIED TO MARIO
     /*0x8C*/ struct SpawnInfo *spawnInfo;
     /*0x90*/ struct Area *area;
     /*0x94*/ struct PlayerCameraState *statusForCamera;
@@ -340,7 +341,10 @@ struct MarioState
     /*0xB4*/ u8 squishTimer;
     /*0xB5*/ u8 fadeWarpOpacity;
     /*0xB6*/ u16 capTimer;
+    /*0xB7*/ u8 capThrowTimer; // CUSTOM CAP THROW TIMER
     /*0xB8*/ s16 prevNumStarsForDialog;
+    /*0xB9*/ u8 capThrowToggle; // CUSTOM CAP THROW TOGGLE
+    /*0xBA*/ u8 isCapThrown; // CUSTOM CAP THROWN BOOL
     /*0xBC*/ f32 peakHeight;
     /*0xC0*/ f32 quicksandDepth;
     /*0xC4*/ f32 unkC4;
