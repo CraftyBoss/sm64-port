@@ -9,6 +9,8 @@
 
 #define DEADZONE 4960
 
+s8 rightstick[2];
+
 static void xinput_init(void) {
 }
 
@@ -36,6 +38,20 @@ static void xinput_read(OSContPad *pad) {
                 pad->stick_x = gp->sThumbLX / 0x100;
                 pad->stick_y = gp->sThumbLY / 0x100;
             }
+
+            uint32_t magnitude_sq_right = (uint32_t)(gp->sThumbLX * gp->sThumbLX) + (uint32_t)(gp->sThumbLY * gp->sThumbLY);
+            if(magnitude_sq_right > (uint32_t)(DEADZONE * DEADZONE)) {
+                rightstick[0] = gp->sThumbRX / 0x100;
+                rightstick[1] = gp->sThumbRY / 0x100;
+            }else {
+                if(gp->sThumbRX < DEADZONE) {
+                    rightstick[0] = 0;
+                }
+                if(gp->sThumbRY < DEADZONE) {
+                    rightstick[1] = 0;
+                }
+            }
+
             break;
         }
     }

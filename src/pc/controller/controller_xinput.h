@@ -7,6 +7,8 @@
 
 extern struct ControllerAPI controller_xinput;
 
+extern s8 rightstick[2];
+
 #endif
 
 #endif
