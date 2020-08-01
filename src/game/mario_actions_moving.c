@@ -460,9 +460,12 @@ void update_walking_speed(struct MarioState *m) {
     if (m->forwardVel > 48.0f) {
         m->forwardVel = 48.0f;
     }
-
-    m->faceAngle[1] =
-        m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+    if(m->isFPS) {
+        // Here we do nothing because we handle mario's face angle through a different function
+    }else {
+        // This bit of math is what makes mario's current Yaw approach whatever the intended yaw is, which would be whatever the control stick input's yaw is + the camera yaw.
+        m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+    }
     apply_slope_accel(m);
 }
 

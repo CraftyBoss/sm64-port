@@ -1306,7 +1306,11 @@ void update_mario_joystick_inputs(struct MarioState *m) {
     }
 
     if (m->intendedMag > 0.0f) {
-        m->intendedYaw = atan2s(-controller->stickY, controller->stickX) + m->area->camera->yaw;
+        if(m->isFPS) {
+            m->intendedYaw = m->area->camera->nextYaw;
+        }else {
+            m->intendedYaw = atan2s(-controller->stickY, controller->stickX) + m->area->camera->yaw;
+        }
         m->input |= INPUT_NONZERO_ANALOG;
     } else {
         m->intendedYaw = m->faceAngle[1];
@@ -1384,6 +1388,10 @@ void update_mario_inputs(struct MarioState *m) {
     update_mario_button_inputs(m);
     update_mario_joystick_inputs(m);
     update_mario_geometry_inputs(m);
+    if(m->isFPS) {
+        update_fps_cam_input(m);
+    }
+    
 
     debug_print_speed_action_normal(m);
 
@@ -1700,6 +1708,20 @@ void func_sh_8025574C(void) {
     }
 }
 #endif
+
+void update_fps_cam_input(struct MarioState *m) {
+
+    m->faceAngle[0] += (s16)(m->controller->stickRY * 10.0f);
+    m->faceAngle[1] -= (s16)(m->controller->stickRX * 10.0f);
+    
+    if (m->faceAngle[0] > 0x38E3) {
+        m->faceAngle[0] = 0x38E3;
+    }
+    if (m->faceAngle[0] < -0x38E3) {
+        m->faceAngle[0] = -0x38E3;
+    }
+
+}
 
 /**
  * Main function for executing Mario's behavior.

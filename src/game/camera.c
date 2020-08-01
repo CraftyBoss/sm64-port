@@ -2794,6 +2794,17 @@ void mode_cannon_camera(struct Camera *c) {
     }
 }
 
+s16 update_in_fps(Vec3f focus, Vec3f pos) {
+    focus_on_mario(pos, focus, 125.f, 125.f, 800.f, sMarioCamState->faceAngle[0], sMarioCamState->faceAngle[1]);
+    return sMarioCamState->faceAngle[1];
+}
+
+void mode_fps_camera(struct Camera *c) {
+    sLakituPitch = 0;
+    gCameraMovementFlags &= ~CAM_MOVING_INTO_MODE;
+    c->nextYaw = update_in_fps(c->focus, c->pos);
+}
+
 /**
  * Cause Lakitu to fly to the next Camera position and focus over a number of frames.
  *
@@ -3096,6 +3107,9 @@ void update_camera(struct Camera *c) {
             }
         } else {
             switch (c->mode) {
+                case CAMERA_MODE_FIRST_PERSON:
+                    mode_fps_camera(c);
+                    break;
                 case CAMERA_MODE_BEHIND_MARIO:
                     mode_behind_mario_camera(c);
                     break;

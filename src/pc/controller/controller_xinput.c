@@ -9,8 +9,6 @@
 
 #define DEADZONE 4960
 
-s8 rightstick[2];
-
 static void xinput_init(void) {
 }
 
@@ -28,10 +26,10 @@ static void xinput_read(OSContPad *pad) {
             if (gp->wButtons & XINPUT_GAMEPAD_A) pad->button |= A_BUTTON;
             if (gp->wButtons & XINPUT_GAMEPAD_X) pad->button |= B_BUTTON;
             if (gp->wButtons & XINPUT_GAMEPAD_DPAD_LEFT) pad->button |= L_TRIG;
-            if (gp->sThumbRX < -0x4000) pad->button |= L_CBUTTONS;
-            if (gp->sThumbRX > 0x4000) pad->button |= R_CBUTTONS;
-            if (gp->sThumbRY < -0x4000) pad->button |= D_CBUTTONS;
-            if (gp->sThumbRY > 0x4000) pad->button |= U_CBUTTONS;
+            // if (gp->sThumbRX < -0x4000) pad->button |= L_CBUTTONS;
+            // if (gp->sThumbRX > 0x4000) pad->button |= R_CBUTTONS;
+            // if (gp->sThumbRY < -0x4000) pad->button |= D_CBUTTONS;
+            // if (gp->sThumbRY > 0x4000) pad->button |= U_CBUTTONS;
 
             uint32_t magnitude_sq = (uint32_t)(gp->sThumbLX * gp->sThumbLX) + (uint32_t)(gp->sThumbLY * gp->sThumbLY);
             if (magnitude_sq > (uint32_t)(DEADZONE * DEADZONE)) {
@@ -39,16 +37,16 @@ static void xinput_read(OSContPad *pad) {
                 pad->stick_y = gp->sThumbLY / 0x100;
             }
 
-            uint32_t magnitude_sq_right = (uint32_t)(gp->sThumbLX * gp->sThumbLX) + (uint32_t)(gp->sThumbLY * gp->sThumbLY);
+            uint32_t magnitude_sq_right = (uint32_t)(gp->sThumbRX * gp->sThumbRX) + (uint32_t)(gp->sThumbRY * gp->sThumbRY);
             if(magnitude_sq_right > (uint32_t)(DEADZONE * DEADZONE)) {
-                rightstick[0] = gp->sThumbRX / 0x100;
-                rightstick[1] = gp->sThumbRY / 0x100;
+                pad->stickr_x = gp->sThumbRX / 0x100;
+                pad->stickr_y = gp->sThumbRY / 0x100;
             }else {
                 if(gp->sThumbRX < DEADZONE) {
-                    rightstick[0] = 0;
+                    pad->stickr_x = 0;
                 }
                 if(gp->sThumbRY < DEADZONE) {
-                    rightstick[1] = 0;
+                    pad->stickr_y = 0;
                 }
             }
 

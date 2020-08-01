@@ -409,6 +409,44 @@ void adjust_analog_stick(struct Controller *controller) {
     }
 }
 
+// Identical to above function, but for the right stick instead (probably doesnt need to be tho)
+void adjust_right_stick(struct Controller *controller) {
+    UNUSED u8 pad[8];
+
+    // reset the controller's x and y floats.
+    controller->stickRX = 0;
+    controller->stickRY = 0;
+
+    // modulate the rawStickX and rawStickY to be the new f32 values by adding/subtracting 6.
+    if (controller->rawStickRX <= -8) {
+        controller->stickRX = controller->rawStickRX + 6;
+    }
+
+    if (controller->rawStickRX >= 8) {
+        controller->stickRX = controller->rawStickRX - 6;
+    }
+
+    if (controller->rawStickRY <= -8) {
+        controller->stickRY = controller->rawStickRY + 6;
+    }
+
+    if (controller->rawStickRY >= 8) {
+        controller->stickRY = controller->rawStickRY - 6;
+    }
+
+    // calculate f32 magnitude from the center by vector length.
+    controller->stickRMag =
+        sqrtf(controller->stickRX * controller->stickRX + controller->stickRY * controller->stickRY);
+
+    // magnitude cannot exceed 64.0f: if it does, modify the values appropriately to
+    // flatten the values down to the allowed maximum value.
+    if (controller->stickRMag > 64) {
+        controller->stickRX *= 64 / controller->stickRMag;
+        controller->stickRY *= 64 / controller->stickRMag;
+        controller->stickRMag = 64;
+    }
+}
+
 // if a demo sequence exists, this will run the demo
 // input list until it is complete. called every frame.
 void run_demo_inputs(void) {
@@ -501,16 +539,30 @@ void read_controller_inputs(void) {
                                         & (controller->controllerData->button ^ controller->buttonDown);
             // 0.5x A presses are a good meme
             controller->buttonDown = controller->controllerData->button;
+
+            /*
+            * Custom Right Stick Inputs
+            */
+            controller->rawStickRX = controller->controllerData->stickr_x;
+            controller->rawStickRY = controller->controllerData->stickr_y;
+
             adjust_analog_stick(controller);
+            adjust_right_stick(controller);
+
         } else // otherwise, if the controllerData is NULL, 0 out all of the inputs.
         {
             controller->rawStickX = 0;
             controller->rawStickY = 0;
+            controller->rawStickRX = 0;
+            controller->rawStickRY = 0;
             controller->buttonPressed = 0;
             controller->buttonDown = 0;
             controller->stickX = 0;
             controller->stickY = 0;
+            controller->stickRX = 0;
+            controller->stickRY = 0;
             controller->stickMag = 0;
+            controller->stickRMag = 0;
         }
     }
 

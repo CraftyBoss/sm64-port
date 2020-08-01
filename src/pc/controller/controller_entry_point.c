@@ -45,6 +45,8 @@ void osContGetReadData(OSContPad *pad) {
     pad->button = 0;
     pad->stick_x = 0;
     pad->stick_y = 0;
+    pad->stickr_x = 0;
+    pad->stickr_y = 0;
     pad->errnum = 0;
 
     for (size_t i = 0; i < sizeof(controller_implementations) / sizeof(struct ControllerAPI *); i++) {

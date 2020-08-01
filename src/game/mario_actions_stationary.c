@@ -45,12 +45,23 @@ s32 check_common_idle_cancels(struct MarioState *m) {
     }
 
     if (m->input & INPUT_NONZERO_ANALOG) {
-        m->faceAngle[1] = (s16) m->intendedYaw;
+        // m->faceAngle[1] = (s16) m->intendedYaw;
         return set_mario_action(m, ACT_WALKING, 0);
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        return set_mario_action(m, ACT_PUNCHING, 0);
+        if(m->isFPS) {
+            m->isFPS = FALSE;
+            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+            set_camera_mode(m->area->camera, CAMERA_MODE_BEHIND_MARIO, 1);
+        }else {
+            m->isFPS = TRUE;
+            m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
+            set_camera_mode(m->area->camera, CAMERA_MODE_FIRST_PERSON, 1);
+        }
+        
+        //return set_mario_action(m, ACT_PUNCHING, 0);
+        return FALSE;
     }
 
     if (m->input & INPUT_Z_DOWN) {

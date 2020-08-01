@@ -26,6 +26,11 @@ struct Controller
   /*0x04*/ float stickX;        // [-64, 64] positive is right
   /*0x08*/ float stickY;        // [-64, 64] positive is up
   /*0x0C*/ float stickMag;      // distance from center [0, 64]
+  s16 rawStickRX;               // 
+  s16 rawStickRY;               // 
+  float stickRX;                // Functions identically (hopefully) to regular stickX
+  float stickRY;                // Functions identically (hopefully) to regular stickY
+  float stickRMag;              // Functions identically (hopefully) to regular stickMag
   /*0x10*/ u16 buttonDown;
   /*0x12*/ u16 buttonPressed;
   /*0x14*/ OSContStatus *statusData;
@@ -335,6 +340,7 @@ struct MarioState
     /*0xAD*/ s8 numLives;
     /*0xAE*/ s16 health;
     /*0xB0*/ s16 unkB0;
+    /*0xB1*/ u8 isFPS; // custom bool for activating/deactivating fps cam
     /*0xB2*/ u8 hurtCounter;
     /*0xB3*/ u8 healCounter;
     /*0xB4*/ u8 squishTimer;
