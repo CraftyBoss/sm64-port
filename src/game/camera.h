@@ -90,19 +90,20 @@
 #define CAM_MODE_MARIO_ACTIVE           0x01
 #define CAM_MODE_LAKITU_WAS_ZOOMED_OUT  0x02
 #define CAM_MODE_MARIO_SELECTED         0x04
+#define CAM_MODE_FIRST_PERSON           0x08 // Maybe works??? idk
 
 #define CAM_SELECTION_MARIO 1
 #define CAM_SELECTION_FIXED 2
 
 #define CAM_ANGLE_MARIO  1
 #define CAM_ANGLE_LAKITU 2
+#define CAM_ANGLE_FIRST_PERSON 3
 
 #define CAMERA_MODE_NONE              0x00
 #define CAMERA_MODE_RADIAL            0x01
 #define CAMERA_MODE_OUTWARD_RADIAL    0x02
 #define CAMERA_MODE_BEHIND_MARIO      0x03
 #define CAMERA_MODE_CLOSE             0x04 // Inside Castle / Big Boo's Haunt
-#define CAMERA_MODE_FIRST_PERSON      0x05 // Custom First Person Camera
 #define CAMERA_MODE_C_UP              0x06
 #define CAMERA_MODE_WATER_SURFACE     0x08
 #define CAMERA_MODE_SLIDE_HOOT        0x09
@@ -111,6 +112,7 @@
 #define CAMERA_MODE_PARALLEL_TRACKING 0x0C
 #define CAMERA_MODE_FIXED             0x0D
 #define CAMERA_MODE_8_DIRECTIONS      0x0E // AKA Parallel Camera, Bowser Courses & Rainbow Ride
+#define CAMERA_MODE_FIRST_PERSON      0x0F // Custom First Person Camera
 #define CAMERA_MODE_FREE_ROAM         0x10
 #define CAMERA_MODE_SPIRAL_STAIRS     0x11
 
@@ -165,8 +167,9 @@
 #define CAM_STATUS_FIXED  1 << 2
 #define CAM_STATUS_C_DOWN 1 << 3
 #define CAM_STATUS_C_UP   1 << 4
+#define CAM_STATUS_FPS    1 << 5
 
-#define CAM_STATUS_MODE_GROUP   (CAM_STATUS_MARIO | CAM_STATUS_LAKITU | CAM_STATUS_FIXED)
+#define CAM_STATUS_MODE_GROUP   (CAM_STATUS_MARIO | CAM_STATUS_LAKITU | CAM_STATUS_FIXED | CAM_STATUS_FPS)
 #define CAM_STATUS_C_MODE_GROUP (CAM_STATUS_C_DOWN | CAM_STATUS_C_UP)
 
 #define SHAKE_ATTACK         1

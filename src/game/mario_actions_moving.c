@@ -12,6 +12,8 @@
 #include "memory.h"
 #include "behavior_data.h"
 #include "thread6.h"
+#include "print.h"
+#include <stdio.h>
 
 struct LandingAction {
     s16 numFrames;
@@ -435,38 +437,81 @@ s32 update_decelerating_speed(struct MarioState *m) {
 
 void update_walking_speed(struct MarioState *m) {
     f32 maxTargetSpeed;
+    f32 minTargetSpeed;
     f32 targetSpeed;
+    f32 intendedMag;
+    f32 sidewaysSpeed = 0.0f;
+    s16 intendedDYaw;
 
     if (m->floor != NULL && m->floor->type == SURFACE_SLOW) {
         maxTargetSpeed = 24.0f;
+        minTargetSpeed = -24.0f;
     } else {
         maxTargetSpeed = 32.0f;
+        minTargetSpeed = -32.0f;
     }
 
-    targetSpeed = m->intendedMag < maxTargetSpeed ? m->intendedMag : maxTargetSpeed;
+    if(m->isFPS) {
+
+        if(m->controller->stickY < maxTargetSpeed && m->controller->stickY > minTargetSpeed) {
+            targetSpeed = m->controller->stickY;
+        }else {
+            if(m->controller->stickY >= 0.0f) {
+                targetSpeed = maxTargetSpeed;
+            }else {
+                targetSpeed = minTargetSpeed;
+            }
+        }
+
+        if (m->input & INPUT_NONZERO_ANALOG) {
+            intendedDYaw = (atan2s(m->controller->stickY, -m->controller->stickX) + m->area->camera->yaw) - m->faceAngle[1];
+            intendedMag = m->intendedMag / 32.0f;
+
+            sidewaysSpeed = intendedMag * sins(intendedDYaw) * 20.0f;
+        }
+
+    }else {
+        targetSpeed = m->intendedMag < maxTargetSpeed ? m->intendedMag : maxTargetSpeed;
+    }
 
     if (m->quicksandDepth > 10.0f) {
         targetSpeed *= 6.25 / m->quicksandDepth;
     }
-
-    if (m->forwardVel <= 0.0f) {
-        m->forwardVel += 1.1f;
-    } else if (m->forwardVel <= targetSpeed) {
-        m->forwardVel += 1.1f - m->forwardVel / 43.0f;
-    } else if (m->floor->normal.y >= 0.95f) {
-        m->forwardVel -= 1.0f;
+    if(m->isFPS) {
+        m->forwardVel = approach_f32(m->forwardVel, targetSpeed, 1.1f, 1.1f);
+    }else {
+        if (m->forwardVel <= 0.0f) {
+            m->forwardVel += 1.1f;
+        } else if (m->forwardVel <= targetSpeed) {
+            m->forwardVel += 1.1f - m->forwardVel / 43.0f;
+        } else if (m->floor->normal.y >= 0.95f) {
+            m->forwardVel -= 1.0f;
+        }
     }
-
+    
     if (m->forwardVel > 48.0f) {
         m->forwardVel = 48.0f;
     }
+    if(m->forwardVel < -48.0f) {
+        m->forwardVel = -48.0f;
+    }
+
     if(m->isFPS) {
-        // Here we do nothing because we handle mario's face angle through a different function
+
+        m->slideVelX = m->forwardVel * sins(m->faceAngle[1]);
+        m->slideVelZ = m->forwardVel * coss(m->faceAngle[1]);
+
+        m->slideVelX += sidewaysSpeed * sins(m->faceAngle[1] + 0x4000);
+        m->slideVelZ += sidewaysSpeed * coss(m->faceAngle[1] + 0x4000);
+
+        m->vel[0] = m->slideVelX;
+        m->vel[2] = m->slideVelZ;
+
     }else {
         // This bit of math is what makes mario's current Yaw approach whatever the intended yaw is, which would be whatever the control stick input's yaw is + the camera yaw.
         m->faceAngle[1] = m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+        apply_slope_accel(m);
     }
-    apply_slope_accel(m);
 }
 
 s32 should_begin_sliding(struct MarioState *m) {

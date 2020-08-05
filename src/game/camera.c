@@ -3025,10 +3025,19 @@ void update_camera(struct Camera *c) {
         // Only process R_TRIG if 'fixed' is not selected in the menu
         if (cam_select_alt_mode(0) == CAM_SELECTION_MARIO) {
             if (gPlayer1Controller->buttonPressed & R_TRIG) {
-                if (set_cam_angle(0) == CAM_ANGLE_LAKITU) {
+                switch (set_cam_angle(0))
+                {
+                case CAM_ANGLE_LAKITU:
                     set_cam_angle(CAM_ANGLE_MARIO);
-                } else {
+                    break;
+                case CAM_ANGLE_MARIO:
+                    set_cam_angle(CAM_ANGLE_FIRST_PERSON);
+                    break;
+                case CAM_ANGLE_FIRST_PERSON:
                     set_cam_angle(CAM_ANGLE_LAKITU);
+                    break;
+                default:
+                    break;
                 }
             }
         }
@@ -3084,7 +3093,9 @@ void update_camera(struct Camera *c) {
     if (c->cutscene == 0) {
         sYawSpeed = 0x400;
 
-        if (sSelectionFlags & CAM_MODE_MARIO_ACTIVE) {
+        if(sSelectionFlags & CAM_MODE_FIRST_PERSON) {
+            mode_fps_camera(c);
+        }else if (sSelectionFlags & CAM_MODE_MARIO_ACTIVE) {
             switch (c->mode) {
                 case CAMERA_MODE_BEHIND_MARIO:
                     mode_behind_mario_camera(c);
@@ -3104,12 +3115,10 @@ void update_camera(struct Camera *c) {
 
                 default:
                     mode_mario_camera(c);
+                    break;
             }
         } else {
             switch (c->mode) {
-                case CAMERA_MODE_FIRST_PERSON:
-                    mode_fps_camera(c);
-                    break;
                 case CAMERA_MODE_BEHIND_MARIO:
                     mode_behind_mario_camera(c);
                     break;
@@ -3726,6 +3735,7 @@ s32 cam_select_alt_mode(s32 selection) {
  * If `mode` is 0, just returns the current mode.
  * If `mode` is 1, start Mario mode
  * If `mode` is 2, start Lakitu mode
+ * If `mode` is 3, start First Person mode (custom)
  */
 s32 set_cam_angle(s32 mode) {
     s32 curMode = CAM_ANGLE_LAKITU;
@@ -3740,9 +3750,9 @@ s32 set_cam_angle(s32 mode) {
         sCameraSoundFlags |= CAM_SOUND_MARIO_ACTIVE;
     }
 
-    // Switch back to normal mode
-    if (mode == CAM_ANGLE_LAKITU && (sSelectionFlags & CAM_MODE_MARIO_ACTIVE)) {
-        sSelectionFlags &= ~CAM_MODE_MARIO_ACTIVE;
+    // Switch to normal mode
+    if (mode == CAM_ANGLE_LAKITU && (sSelectionFlags & CAM_MODE_FIRST_PERSON)) {
+        sSelectionFlags &= ~CAM_MODE_FIRST_PERSON;
         if (sSelectionFlags & CAM_MODE_LAKITU_WAS_ZOOMED_OUT) {
             sSelectionFlags &= ~CAM_MODE_LAKITU_WAS_ZOOMED_OUT;
             gCameraMovementFlags |= CAM_MOVE_ZOOMED_OUT;
@@ -3751,9 +3761,26 @@ s32 set_cam_angle(s32 mode) {
         }
         sCameraSoundFlags |= CAM_SOUND_NORMAL_ACTIVE;
     }
+
+    // Switch to First Person mode
+    if(mode == CAM_ANGLE_FIRST_PERSON && (sSelectionFlags & CAM_MODE_MARIO_ACTIVE)) {
+        sSelectionFlags &= ~CAM_MODE_MARIO_ACTIVE;
+        sSelectionFlags |= CAM_MODE_FIRST_PERSON;
+        if (gCameraMovementFlags & CAM_MOVE_ZOOMED_OUT) {
+            sSelectionFlags |= CAM_MODE_LAKITU_WAS_ZOOMED_OUT;
+            gCameraMovementFlags &= ~CAM_MOVE_ZOOMED_OUT;
+        }
+        sCameraSoundFlags |= CAM_SOUND_NORMAL_ACTIVE;
+    }
+
     if (sSelectionFlags & CAM_MODE_MARIO_ACTIVE) {
         curMode = CAM_ANGLE_MARIO;
     }
+
+    if(sSelectionFlags & CAM_MODE_FIRST_PERSON) {
+        curMode = CAM_ANGLE_FIRST_PERSON;
+    }
+
     return curMode;
 }
 
@@ -3907,6 +3934,8 @@ s32 update_camera_hud_status(struct Camera *c) {
         status |= CAM_STATUS_FIXED;
     } else if (set_cam_angle(0) == CAM_ANGLE_MARIO) {
         status |= CAM_STATUS_MARIO;
+    } else if(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) {
+        status |= CAM_STATUS_FPS;
     } else {
         status |= CAM_STATUS_LAKITU;
     }

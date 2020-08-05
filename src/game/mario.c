@@ -1388,7 +1388,7 @@ void update_mario_inputs(struct MarioState *m) {
     update_mario_button_inputs(m);
     update_mario_joystick_inputs(m);
     update_mario_geometry_inputs(m);
-    if(m->isFPS) {
+    if(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) {
         update_fps_cam_input(m);
     }
     
@@ -1710,7 +1710,7 @@ void func_sh_8025574C(void) {
 #endif
 
 void update_fps_cam_input(struct MarioState *m) {
-
+    
     m->faceAngle[0] += (s16)(m->controller->stickRY * 10.0f);
     m->faceAngle[1] -= (s16)(m->controller->stickRX * 10.0f);
     
@@ -1721,6 +1721,10 @@ void update_fps_cam_input(struct MarioState *m) {
         m->faceAngle[0] = -0x38E3;
     }
 
+    if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) && m->isFPS) {
+            m->isFPS = FALSE;
+            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+    }
 }
 
 /**
@@ -1739,6 +1743,24 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         // If Mario is OOB, stop executing actions.
         if (gMarioState->floor == NULL) {
             return 0;
+        }
+
+        
+
+        if(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) {
+            if(gMarioState->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE) {
+                gMarioState->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
+                gMarioState->isFPS = TRUE;
+            }
+            if(gMarioState->area->camera->cutscene != 0) {
+                gMarioState->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+                gMarioState->isFPS = FALSE;
+            }
+        }else if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON)) {
+            if(!(gMarioState->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE)) {
+                gMarioState->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+                gMarioState->isFPS = FALSE;
+            }
         }
 
         // The function can loop through many action shifts in one frame,
@@ -1834,6 +1856,8 @@ void init_mario(void) {
     } else {
         gMarioState->flags = (MARIO_CAP_ON_HEAD | MARIO_NORMAL_CAP);
     }
+
+    gMarioState->isFPS = FALSE;
 
     gMarioState->forwardVel = 0.0f;
     gMarioState->squishTimer = 0;

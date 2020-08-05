@@ -375,7 +375,7 @@ void set_hud_camera_status(s16 status) {
  * the camera status called, a defined glyph is rendered.
  */
 void render_hud_camera_status(void) {
-    u8 *(*cameraLUT)[6];
+    u8 *(*cameraLUT)[7];
     s32 x;
     s32 y;
 
@@ -399,6 +399,9 @@ void render_hud_camera_status(void) {
             break;
         case CAM_STATUS_FIXED:
             render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_FIXED]);
+            break;
+        case CAM_STATUS_FPS:
+            render_hud_tex_lut(x + 16, y, (*cameraLUT)[GLYPH_CAM_EYE]);
             break;
     }
 

@@ -50,17 +50,7 @@ s32 check_common_idle_cancels(struct MarioState *m) {
     }
 
     if (m->input & INPUT_B_PRESSED) {
-        if(m->isFPS) {
-            m->isFPS = FALSE;
-            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
-            set_camera_mode(m->area->camera, CAMERA_MODE_BEHIND_MARIO, 1);
-        }else {
-            m->isFPS = TRUE;
-            m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
-            set_camera_mode(m->area->camera, CAMERA_MODE_FIRST_PERSON, 1);
-        }
-        
-        //return set_mario_action(m, ACT_PUNCHING, 0);
+        return set_mario_action(m, ACT_PUNCHING, 0);
         return FALSE;
     }
 
