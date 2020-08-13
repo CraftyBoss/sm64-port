@@ -2802,6 +2802,7 @@ s16 update_in_fps(Vec3f focus, Vec3f pos) {
 void mode_fps_camera(struct Camera *c) {
     sLakituPitch = 0;
     gCameraMovementFlags &= ~CAM_MOVING_INTO_MODE;
+    sStatusFlags |= CAM_FLAG_BLOCK_SMOOTH_MOVEMENT;
     c->nextYaw = update_in_fps(c->focus, c->pos);
 }
 
@@ -2945,12 +2946,14 @@ void update_lakitu(struct Camera *c) {
         vec3f_copy(gLakituState.goalFocus, c->focus);
 
         // Simulate Lakitu flying to the new position and turning towards the new focus
-        set_or_approach_vec3f_asymptotic(gLakituState.curPos, newPos,
-                                         gLakituState.posHSpeed, gLakituState.posVSpeed,
-                                         gLakituState.posHSpeed);
-        set_or_approach_vec3f_asymptotic(gLakituState.curFocus, newFoc,
-                                         gLakituState.focHSpeed, gLakituState.focVSpeed,
-                                         gLakituState.focHSpeed);
+        vec3f_copy(gLakituState.curPos, newPos);
+        vec3f_copy(gLakituState.curFocus, newFoc);
+        // set_or_approach_vec3f_asymptotic(gLakituState.curPos, newPos,
+        //                                  gLakituState.posHSpeed, gLakituState.posVSpeed,
+        //                                  gLakituState.posHSpeed);
+        // set_or_approach_vec3f_asymptotic(gLakituState.curFocus, newFoc,
+        //                                  gLakituState.focHSpeed, gLakituState.focVSpeed,
+        //                                  gLakituState.focHSpeed);
         // Adjust Lakitu's speed back to normal
         set_or_approach_f32_asymptotic(&gLakituState.focHSpeed, 0.8f, 0.05f);
         set_or_approach_f32_asymptotic(&gLakituState.focVSpeed, 0.3f, 0.05f);

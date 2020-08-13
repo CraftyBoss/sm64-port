@@ -1713,17 +1713,76 @@ void update_fps_cam_input(struct MarioState *m) {
     
     m->faceAngle[0] += (s16)(m->controller->stickRY * 10.0f);
     m->faceAngle[1] -= (s16)(m->controller->stickRX * 10.0f);
-    
-    if (m->faceAngle[0] > 0x38E3) {
-        m->faceAngle[0] = 0x38E3;
+
+    if (m->faceAngle[0] > DEGREES(40)) {
+        m->faceAngle[0] = DEGREES(40);
     }
-    if (m->faceAngle[0] < -0x38E3) {
-        m->faceAngle[0] = -0x38E3;
+    if (m->faceAngle[0] < -DEGREES(40)) {
+        m->faceAngle[0] = -DEGREES(40);
+    }
+
+    if(m->armCannon != NULL) {
+        if(m->input & INPUT_B_PRESSED) {
+            m->armCannon->oAction = 2;
+        }
+        
     }
 
     if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) && m->isFPS) {
             m->isFPS = FALSE;
             m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+    }
+}
+
+struct Object *spawn_arm_cannon(struct MarioState *m) {
+    struct Object *o;
+    o = spawn_object_relative(0, 0, 0, 0, m->marioObj, MODEL_ARM_CANNON, bhvArmCannon);
+    o->parentObj = m->marioObj;
+    return o;
+}
+
+void first_person_handler(struct MarioState *m) {
+    if(FALSE) {
+        if(m->armCannon != NULL) {
+            //print_text_fmt_int(20,20,"Ecks %d", m->armCannon->oPosX);
+            //print_text_fmt_int(20,40,"Y %d", m->armCannon->oPosY);
+            //print_text_fmt_int(20,60,"2 %d", m->armCannon->oPosZ);
+
+            if(m->armCannon->oPosX == m->pos[0] && m->armCannon->oPosZ == m->pos[2]) {
+                print_text(160,80,"good");
+            }
+            print_text_fmt_int(160,20, "frame %d", m->armCannon->header.gfx.unk38.animFrame);
+            print_text_fmt_int(160,40, "action %d", m->armCannon->oAction);
+
+        }
+        
+        print_text_fmt_int(20,20,"Ecks %d", m->area->camera->focus[0]);
+        print_text_fmt_int(20,40,"Y %d", m->area->camera->focus[1]);
+        print_text_fmt_int(20,60,"2 %d", m->area->camera->focus[2]);
+
+        print_text_fmt_int(20,80,", Ecks %d", m->pos[0]);
+        print_text_fmt_int(20,100,", Y %d", m->pos[1]);
+        print_text_fmt_int(20,120,", 2 %d", m->pos[2]);
+    }
+
+    if(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) {
+        if(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE) {
+            m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
+            m->isFPS = TRUE;
+            m->armCannon = spawn_arm_cannon(m);
+        }
+        if(m->area->camera->cutscene != 0) {
+            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+            m->isFPS = FALSE;
+            m->armCannon->oAction = 1;
+        }
+
+    }else if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON)) {
+        if(!(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE)) {
+            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+            m->isFPS = FALSE;
+            m->armCannon->oAction = 1;
+        }
     }
 }
 
@@ -1743,24 +1802,6 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         // If Mario is OOB, stop executing actions.
         if (gMarioState->floor == NULL) {
             return 0;
-        }
-
-        
-
-        if(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) {
-            if(gMarioState->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE) {
-                gMarioState->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
-                gMarioState->isFPS = TRUE;
-            }
-            if(gMarioState->area->camera->cutscene != 0) {
-                gMarioState->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
-                gMarioState->isFPS = FALSE;
-            }
-        }else if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON)) {
-            if(!(gMarioState->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE)) {
-                gMarioState->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
-                gMarioState->isFPS = FALSE;
-            }
         }
 
         // The function can loop through many action shifts in one frame,
@@ -1804,6 +1845,7 @@ s32 execute_mario_action(UNUSED struct Object *o) {
         update_mario_health(gMarioState);
         update_mario_info_for_cam(gMarioState);
         mario_update_hitbox_and_cap_model(gMarioState);
+        first_person_handler(gMarioState);
 
         // Both of the wind handling portions play wind audio only in
         // non-Japanese releases.

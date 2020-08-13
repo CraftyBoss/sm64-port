@@ -1864,15 +1864,18 @@ void cur_obj_move_using_fvel_and_gravity(void) {
     cur_obj_move_using_vel_and_gravity(); //! No terminal velocity
 }
 
-void obj_set_pos_relative(struct Object *obj, struct Object *other, f32 dleft, f32 dy,
-                             f32 dforward) {
-    f32 facingZ = coss(other->oMoveAngleYaw);
-    f32 facingX = sins(other->oMoveAngleYaw);
-
-    f32 dz = dforward * facingZ - dleft * facingX;
+void obj_set_pos_relative(struct Object *obj, struct Object *other, f32 dleft, f32 dup,
+                             f32 dforward, f32 dist) {
+    f32 facingX = sins(gPlayerCameraState->faceAngle[1]) * coss(gPlayerCameraState->faceAngle[0]);
+    f32 facingY = sins(gPlayerCameraState->faceAngle[0]) * (dleft + dforward);
+    f32 facingZ = coss(gPlayerCameraState->faceAngle[1]) * coss(-gPlayerCameraState->faceAngle[0]);
+    
     f32 dx = dforward * facingX + dleft * facingZ;
+    f32 dy = facingY + dup;
+    f32 dz = dforward * facingZ - dleft * facingX;
 
-    obj->oMoveAngleYaw = other->oMoveAngleYaw;
+    obj->oFaceAngleYaw = gPlayerCameraState->faceAngle[1] + 0x8000;
+    obj->oFaceAnglePitch = gPlayerCameraState->faceAngle[0];
 
     obj->oPosX = other->oPosX + dx;
     obj->oPosY = other->oPosY + dy;

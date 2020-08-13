@@ -1,0 +1,78 @@
+diff --git a/actors/mario/geo.inc.c b/actors/mario/geo.inc.c
+index bd6ce1f..8265749 100644
+--- a/actors/mario/geo.inc.c
++++ b/actors/mario/geo.inc.c
+@@ -1,3 +1,5 @@
++#define LAYER_OPAQUE 8 // Temporarily set the opaque layer to 8, for the silhouette
++
+ // Normal Mario Geo
+ 
+ // 0x170002E0
+diff --git a/src/engine/graph_node.h b/src/engine/graph_node.h
+index ac05ed1..e9b14e3 100644
+--- a/src/engine/graph_node.h
++++ b/src/engine/graph_node.h
+@@ -63,7 +63,7 @@ extern Vec3s gVec3sOne;
+ 
+ // The number of master lists. A master list determines the order and render
+ // mode with which display lists are drawn.
+-#define GFX_NUM_MASTER_LISTS 8
++#define GFX_NUM_MASTER_LISTS 9
+ 
+ // Passed as first argument to a GraphNodeFunc to give information about in
+ // which context it was called and what it is expected to do.
+diff --git a/src/game/rendering_graph_node.c b/src/game/rendering_graph_node.c
+index 3108368..79f1b1a 100644
+--- a/src/game/rendering_graph_node.c
++++ b/src/game/rendering_graph_node.c
+@@ -151,16 +151,45 @@ static void geo_process_master_list_sub(struct GraphNodeMasterList *node) {
+         gSPSetGeometryMode(gDisplayListHead++, G_ZBUFFER);
+     }
+ 
+-    for (i = 0; i < GFX_NUM_MASTER_LISTS; i++) {
+-        if ((currList = node->listHeads[i]) != NULL) {
+-            gDPSetRenderMode(gDisplayListHead++, modeList->modes[i], mode2List->modes[i]);
++	for (i = 0; i < GFX_NUM_MASTER_LISTS; i++) {
++		if (i == 5) //Render Mario silhouette
++		{
++			if ((currList = node->listHeads[8]) != NULL)
++			{
++#define SCHWA AA_EN | IM_RD | CVG_DST_WRAP | CLR_ON_CVG | FORCE_BL
++
++					gDPSetFogColor(gDisplayListHead++, 0x0, 0x0, 0x0, 0x80);
++					gSPFogPosition(gDisplayListHead++, 0, 0);
++					gSPSetGeometryMode(gDisplayListHead++, G_FOG);
++					gDPSetRenderMode(gDisplayListHead++, SCHWA | GBL_c1(G_BL_CLR_FOG, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA), SCHWA | GBL_c2(G_BL_CLR_FOG, G_BL_A_IN, G_BL_CLR_MEM, G_BL_1MA));
++					gDPSetEnvColor(gDisplayListHead++, 0x80, 0x80, 0x80, 0xA0);
++					gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
++                while (currList != NULL) {
++					gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(currList->transform),
++						G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_LOAD);
++					gSPDisplayList(gDisplayListHead++, currList->displayList);
++					currList = currList->next;
++				}
++				gSPClearGeometryMode(gDisplayListHead++, G_FOG);
++				gDPSetEnvColor(gDisplayListHead++, 0xFF, 0xFF, 0xFF, 0xFF);
++				currList = node->listHeads[8]; 
++				while (currList != NULL) {
++					gDPSetRenderMode(gDisplayListHead++, modeList->modes[1], mode2List->modes[1]);
++					gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(currList->transform),
++						G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_LOAD);
++					gSPDisplayList(gDisplayListHead++, currList->displayList);
++					currList = currList->next;
++				}
++			}
++		}
++        if (i < 8 && (currList = node->listHeads[i]) != NULL)
+             while (currList != NULL) {
++				gDPSetRenderMode(gDisplayListHead++, modeList->modes[i], mode2List->modes[i]);
+                 gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(currList->transform),
+-                          G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
++                          G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_LOAD);
+                 gSPDisplayList(gDisplayListHead++, currList->displayList);
+                 currList = currList->next;
+             }
+-        }
+     }
+     if (enableZBuffer != 0) {
+         gDPPipeSync(gDisplayListHead++);
