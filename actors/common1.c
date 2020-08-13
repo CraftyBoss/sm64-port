@@ -83,8 +83,3 @@ UNUSED static const u64 binid_21 = 21;
 
 #include "tree/model.inc.c"
 UNUSED static const u64 binid_22 = 22;
-
-#include "arm_cannon/model.inc.c"
-#include "arm_cannon/anims/data.inc.c"
-#include "arm_cannon/anims/table.inc.c"
-UNUSED static const u64 binid_23 = 23;

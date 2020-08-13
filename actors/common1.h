@@ -250,18 +250,4 @@ extern const Gfx wooden_signpost_seg3_dl_0302DCD0[];
 extern const Gfx wooden_signpost_seg3_dl_0302DD08[];
 extern const Collision wooden_signpost_seg3_collision_0302DD80[];
 
-// arm_cannon
-extern const GeoLayout cannon_geo[];
-extern Vtx arm_cannon_root_mesh_vtx_0[185];
-extern Gfx arm_cannon_root_mesh_tri_0[];
-extern Vtx arm_cannon_root_mesh_vtx_1[64];
-extern Gfx arm_cannon_root_mesh_tri_1[];
-extern Vtx arm_cannon_root_mesh_vtx_2[86];
-extern Gfx arm_cannon_root_mesh_tri_2[];
-
-extern Gfx arm_cannon_root_mesh[];
-extern Gfx arm_cannon_material_revert_render_settings[];
-
-extern const struct Animation *const arm_cannon_anims[];
-
 #endif

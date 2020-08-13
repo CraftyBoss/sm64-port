@@ -12,6 +12,18 @@ static struct ObjectHitbox sArmCannonHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
+static struct ObjectHitbox sArmCannonShotHitbox = {
+    /* interactType:      */ 0,
+    /* downOffset:        */ 0,
+    /* damageOrCoinValue: */ 0,
+    /* health:            */ 0,
+    /* numLootCoins:      */ 0,
+    /* radius:            */ 100,
+    /* height:            */ 50,
+    /* hurtboxRadius:     */ 100,
+    /* hurtboxHeight:     */ 50,
+};
+
 s32 arm_cannon_set_hitbox(void) {
     obj_set_hitbox(o, &sArmCannonHitbox);
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
@@ -43,6 +55,7 @@ void bhv_arm_cannon_shot_init(void) {
     s16 yaw;
 
     object_pos_to_vec3f(objPos, o);
+    obj_set_hitbox(o, &sArmCannonShotHitbox);
 
     vec3f_get_dist_and_angle(objPos,gMarioState->area->camera->focus,&dist,&pitch,&yaw);
     o->oMoveAngleYaw = yaw;
@@ -62,7 +75,7 @@ void bhv_arm_cannon_shot_loop(void) {
     cur_obj_update_floor_and_walls();
     collisionFlags = object_step_without_floor_orient();
 
-    if(collisionFlags & 2 || collisionFlags & 1 || (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_HIT_WALL)) || o->oTimer >= 120) {
+    if(collisionFlags & 2 || collisionFlags & 1 || (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_HIT_WALL)) || o->oTimer >= 120 || obj_attack_collided_from_other_object(o)) {
         spawn_mist_particles();
         obj_mark_for_deletion(o);
     }else {

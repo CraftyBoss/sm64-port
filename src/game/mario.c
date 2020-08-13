@@ -1781,7 +1781,9 @@ void first_person_handler(struct MarioState *m) {
         if(!(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE)) {
             m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
             m->isFPS = FALSE;
-            m->armCannon->oAction = 1;
+            if(m->armCannon != NULL) {
+                m->armCannon->oAction = 1;
+            }
         }
     }
 }
