@@ -1,3 +1,4 @@
+#include "texscroll.h"
 #include <ultra64.h>
 
 #include "sm64.h"
@@ -891,6 +892,20 @@ void update_hud_values(void) {
             gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_COIN_COUNT;
         }
 
+        if(gMarioState->isFPS) {
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_SAMUS;
+            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_COIN_COUNT;
+            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_LIVES;
+            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_STAR_COUNT;
+            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_CAMERA_AND_POWER;
+        }else {
+            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_SAMUS;
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_COIN_COUNT;
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_LIVES;
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_STAR_COUNT;
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_CAMERA_AND_POWER;
+        }
+
         if (gHudDisplay.coins < gMarioState->numCoins) {
             if (gGlobalTimer & 0x00000001) {
                 u32 coinSound;
@@ -1128,7 +1143,7 @@ s32 update_level(void) {
 
     switch (sCurrPlayMode) {
         case PLAY_MODE_NORMAL:
-            changeLevel = play_mode_normal();
+            changeLevel = play_mode_normal(); scroll_textures();
             break;
         case PLAY_MODE_PAUSED:
             changeLevel = play_mode_paused();
@@ -1149,6 +1164,8 @@ s32 update_level(void) {
         enable_background_sound();
     }
 
+    
+
     return changeLevel;
 }
 
@@ -1162,7 +1179,11 @@ s32 init_level(void) {
     D_80339EE0 = 0;
 
     if (gCurrCreditsEntry == NULL) {
-        gHudDisplay.flags = HUD_DISPLAY_DEFAULT;
+        if(gMarioState->isFPS) {
+            gHudDisplay.flags = HUD_DISPLAY_FLAG_SAMUS;
+        }else {
+            gHudDisplay.flags = HUD_DISPLAY_DEFAULT;
+        }
     } else {
         gHudDisplay.flags = HUD_DISPLAY_NONE;
     }
@@ -1282,6 +1303,7 @@ s32 lvl_set_current_level(UNUSED s16 arg0, s32 levelNum) {
     D_8032C9E0 = 0;
     gCurrLevelNum = levelNum;
     gCurrCourseNum = gLevelToCourseNumTable[levelNum - 1];
+	if (gCurrLevelNum == LEVEL_CASTLE_COURTYARD) return 0;
 
     if (gCurrDemoInput != NULL || gCurrCreditsEntry != NULL || gCurrCourseNum == COURSE_NONE) {
         return 0;

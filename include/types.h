@@ -82,7 +82,7 @@ struct VblankHandler
 
 #define ANIM_FLAG_NOLOOP     (1 << 0) // 0x01
 #define ANIM_FLAG_FORWARD    (1 << 1) // 0x02
-#define ANIM_FLAG_2          (1 << 2) // 0x04
+#define ANIM_FLAG_2          (1 << 2) // 0x04 (Stops Animation from playing)
 #define ANIM_FLAG_HOR_TRANS  (1 << 3) // 0x08
 #define ANIM_FLAG_VERT_TRANS (1 << 4) // 0x10
 #define ANIM_FLAG_5          (1 << 5) // 0x20
@@ -287,6 +287,13 @@ struct MarioAnimation
     u8 padding[4];
 };
 
+enum cannonBeamTypes {
+    CANNON_BEAM_POWER,
+    CANNON_BEAM_ICE,
+    CANNON_BEAM_WAVE,
+    CANNON_BEAM_FIRE,
+};
+
 struct MarioState
 {
     /*0x00*/ u16 unk00;
@@ -347,6 +354,7 @@ struct MarioState
     /*0xB4*/ u8 squishTimer;
     /*0xB5*/ u8 fadeWarpOpacity;
     /*0xB6*/ u16 capTimer;
+    /*0xB7*/ enum cannonBeamTypes beamSel;
     /*0xB8*/ s16 prevNumStarsForDialog;
     /*0xBC*/ f32 peakHeight;
     /*0xC0*/ f32 quicksandDepth;

@@ -33,6 +33,7 @@
 #include "save_file.h"
 #include "sound_init.h"
 #include "thread6.h"
+#include "pc/hooks/mouse_hook.h"
 
 u32 unused80339F10;
 s8 filler80339F1C[20];
@@ -1710,22 +1711,21 @@ void func_sh_8025574C(void) {
 #endif
 
 void update_fps_cam_input(struct MarioState *m) {
-    
-    m->faceAngle[0] += (s16)(m->controller->stickRY * 10.0f);
-    m->faceAngle[1] -= (s16)(m->controller->stickRX * 10.0f);
+    if(FALSE) {
+        // m->faceAngle[0] += (s16)(getMousePos()[1] * 10.0f);
+        // m->faceAngle[1] -= (s16)(getMousePos()[0] * 10.0f);
+    }else {
+        m->faceAngle[0] += (s16)(m->controller->stickRY * 10.0f) * (m->controller->stickRMag / 64.0f);
+        m->faceAngle[1] -= (s16)(m->controller->stickRX * 10.0f) * (m->controller->stickRMag / 64.0f);
+    }
+
+    // print_text_fmt_int(20,20, "%d", getMousePosX());
 
     if (m->faceAngle[0] > DEGREES(40)) {
         m->faceAngle[0] = DEGREES(40);
     }
     if (m->faceAngle[0] < -DEGREES(40)) {
         m->faceAngle[0] = -DEGREES(40);
-    }
-
-    if(m->armCannon != NULL) {
-        if(m->input & INPUT_B_PRESSED) {
-            m->armCannon->oAction = 2;
-        }
-        
     }
 
     if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) && m->isFPS) {
@@ -1741,45 +1741,62 @@ struct Object *spawn_arm_cannon(struct MarioState *m) {
     return o;
 }
 
+void update_beam_selection(struct Controller *controller) {
+    if(controller->buttonDown & U_JPAD) {
+        gMarioState->beamSel = CANNON_BEAM_POWER;
+    }else if(controller->buttonDown & D_JPAD) {
+        gMarioState->beamSel = CANNON_BEAM_ICE;
+    }else if(controller->buttonDown & L_JPAD) {
+        gMarioState->beamSel = CANNON_BEAM_FIRE;
+    }else if(controller->buttonDown & R_JPAD) {
+        gMarioState->beamSel = CANNON_BEAM_WAVE;
+    }
+}
+
 void first_person_handler(struct MarioState *m) {
+    update_beam_selection(m->controller);
+    print_text_fmt_int(80,20, "beam %d", m->beamSel);
     if(FALSE) {
         if(m->armCannon != NULL) {
             //print_text_fmt_int(20,20,"Ecks %d", m->armCannon->oPosX);
             //print_text_fmt_int(20,40,"Y %d", m->armCannon->oPosY);
             //print_text_fmt_int(20,60,"2 %d", m->armCannon->oPosZ);
 
-            if(m->armCannon->oPosX == m->pos[0] && m->armCannon->oPosZ == m->pos[2]) {
-                print_text(160,80,"good");
-            }
-            print_text_fmt_int(160,20, "frame %d", m->armCannon->header.gfx.unk38.animFrame);
-            print_text_fmt_int(160,40, "action %d", m->armCannon->oAction);
+            print_text_fmt_int(140,80, "frame %d", m->armCannon->header.gfx.unk38.animFrame);
+            print_text_fmt_int(140,60, "anim %d", m->armCannon->header.gfx.unk38.animID);
+            print_text_fmt_int(140,40, "act %d", m->armCannon->oAction);
+            print_text_fmt_int(140,20, "time %d", m->armCannon->oArmCannonChargeTimer);
 
         }
-        
-        print_text_fmt_int(20,20,"Ecks %d", m->area->camera->focus[0]);
-        print_text_fmt_int(20,40,"Y %d", m->area->camera->focus[1]);
-        print_text_fmt_int(20,60,"2 %d", m->area->camera->focus[2]);
 
-        print_text_fmt_int(20,80,", Ecks %d", m->pos[0]);
-        print_text_fmt_int(20,100,", Y %d", m->pos[1]);
-        print_text_fmt_int(20,120,", 2 %d", m->pos[2]);
+        print_text_fmt_int(140,100, "beam %d", m->beamSel);
+        
+        // print_text_fmt_int(20,20,"Ecks %d", m->area->camera->focus[0]);
+        // print_text_fmt_int(20,40,"Y %d", m->area->camera->focus[1]);
+        // print_text_fmt_int(20,60,"2 %d", m->area->camera->focus[2]);
+
+        // print_text_fmt_int(20,80,", Ecks %d", m->pos[0]);
+        // print_text_fmt_int(20,100,", Y %d", m->pos[1]);
+        // print_text_fmt_int(20,120,", 2 %d", m->pos[2]);
     }
 
     if(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) {
-        if(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE) {
-            m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_ACTIVE;
+        if(!(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_INVISIBLE) && m->area->camera->cutscene == 0) {
+            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
             m->isFPS = TRUE;
             m->armCannon = spawn_arm_cannon(m);
         }
         if(m->area->camera->cutscene != 0) {
-            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+            m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
             m->isFPS = FALSE;
-            m->armCannon->oAction = 1;
+            if(m->armCannon != NULL) {
+                m->armCannon->oAction = 1;
+            }
         }
 
     }else if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON)) {
-        if(!(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_ACTIVE)) {
-            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
+        if(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_INVISIBLE) {
+            m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
             m->isFPS = FALSE;
             if(m->armCannon != NULL) {
                 m->armCannon->oAction = 1;
@@ -1795,7 +1812,7 @@ s32 execute_mario_action(UNUSED struct Object *o) {
     s32 inLoop = TRUE;
 
     if (gMarioState->action) {
-        gMarioState->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
+        // gMarioState->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
         mario_reset_bodystate(gMarioState);
         update_mario_inputs(gMarioState);
         mario_handle_special_floors(gMarioState);

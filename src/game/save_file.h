@@ -89,16 +89,16 @@ extern s8 gLevelToCourseNumTable[];
 #define SAVE_FLAG_HAVE_VANISH_CAP        /* 0x000008 */ (1 << 3)
 #define SAVE_FLAG_HAVE_KEY_1             /* 0x000010 */ (1 << 4)
 #define SAVE_FLAG_HAVE_KEY_2             /* 0x000020 */ (1 << 5)
-#define SAVE_FLAG_UNLOCKED_BASEMENT_DOOR /* 0x000040 */ (1 << 6)
-#define SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR /* 0x000080 */ (1 << 7)
-#define SAVE_FLAG_DDD_MOVED_BACK         /* 0x000100 */ (1 << 8)
-#define SAVE_FLAG_MOAT_DRAINED           /* 0x000200 */ (1 << 9)
-#define SAVE_FLAG_UNLOCKED_PSS_DOOR      /* 0x000400 */ (1 << 10)
-#define SAVE_FLAG_UNLOCKED_WF_DOOR       /* 0x000800 */ (1 << 11)
-#define SAVE_FLAG_UNLOCKED_CCM_DOOR      /* 0x001000 */ (1 << 12)
-#define SAVE_FLAG_UNLOCKED_JRB_DOOR      /* 0x002000 */ (1 << 13)
-#define SAVE_FLAG_UNLOCKED_BITDW_DOOR    /* 0x004000 */ (1 << 14)
-#define SAVE_FLAG_UNLOCKED_BITFS_DOOR    /* 0x008000 */ (1 << 15)
+#define SAVE_FLAG_UNLOCKED_BASEMENT_DOOR /* 0x000040 */ (1 << 6)  // remove
+#define SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR /* 0x000080 */ (1 << 7)  // remove
+#define SAVE_FLAG_DDD_MOVED_BACK         /* 0x000100 */ (1 << 8)  // remove
+#define SAVE_FLAG_MOAT_DRAINED           /* 0x000200 */ (1 << 9)  // remove
+#define SAVE_FLAG_UNLOCKED_PSS_DOOR      /* 0x000400 */ (1 << 10) // remove
+#define SAVE_FLAG_UNLOCKED_WF_DOOR       /* 0x000800 */ (1 << 11) // remove 
+#define SAVE_FLAG_UNLOCKED_CCM_DOOR      /* 0x001000 */ (1 << 12) // remove
+#define SAVE_FLAG_UNLOCKED_JRB_DOOR      /* 0x002000 */ (1 << 13) // remove 
+#define SAVE_FLAG_UNLOCKED_BITDW_DOOR    /* 0x004000 */ (1 << 14) // remove
+#define SAVE_FLAG_UNLOCKED_BITFS_DOOR    /* 0x008000 */ (1 << 15) // remove
 #define SAVE_FLAG_CAP_ON_GROUND          /* 0x010000 */ (1 << 16)
 #define SAVE_FLAG_CAP_ON_KLEPTO          /* 0x020000 */ (1 << 17)
 #define SAVE_FLAG_CAP_ON_UKIKI           /* 0x040000 */ (1 << 18)

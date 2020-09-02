@@ -24,6 +24,9 @@ static struct ObjectHitbox sArmCannonShotHitbox = {
     /* hurtboxHeight:     */ 50,
 };
 
+s16 canShoot;
+s16 hasShot;
+
 s32 arm_cannon_set_hitbox(void) {
     obj_set_hitbox(o, &sArmCannonHitbox);
     if (o->oInteractStatus & INT_STATUS_INTERACTED) {
@@ -46,6 +49,9 @@ void bhv_arm_cannon_init(void) {
     o->oFriction = 0.0f;
     o->oBuoyancy = 0.0f;
     o->oOpacity = 0xFF;
+    o->oTimer = 0;
+    canShoot = 0;
+    hasShot = 0;
 }
 
 void bhv_arm_cannon_shot_init(void) {
@@ -78,14 +84,13 @@ void bhv_arm_cannon_shot_loop(void) {
     if(collisionFlags & 2 || collisionFlags & 1 || (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_HIT_WALL)) || o->oTimer >= 120 || obj_attack_collided_from_other_object(o)) {
         spawn_mist_particles();
         obj_mark_for_deletion(o);
-    }else {
-        o->oTimer++;
     }
 }
 
 void bhv_arm_cannon_loop(void) {
     Vec3f objPos;
     Vec3f mPos;
+    s16 animID = o->header.gfx.unk38.animID;
 
     object_pos_to_vec3f(objPos, o);
     vec3f_copy(mPos, gMarioState->pos);
@@ -93,11 +98,15 @@ void bhv_arm_cannon_loop(void) {
     switch (o->oAction)
     {
     case 0:
-        // obj_copy_pos(o, gMarioObject);
         obj_set_pos_relative(o,gMarioObject,-20, 100, 40, 40);
-        if(o->header.gfx.unk38.animFrame == 1) {
-            cur_obj_play_sound_2(SOUND_OBJ_SNUFIT_SHOOT);
-            spawn_object_relative(0, 0, 0, 0, o, MODEL_BOWLING_BALL, bhvArmCannonShot);
+        if(gMarioState->intendedMag > 0.0f) {
+            if(animID == 0) {
+                cur_obj_init_animation(1);
+            }
+        }else {
+            if(o->header.gfx.unk38.animFrame >= 14) {
+                cur_obj_init_animation(0);
+            }
         }
         break;
     case 1:
@@ -105,16 +114,98 @@ void bhv_arm_cannon_loop(void) {
         break;
     case 2:
         obj_set_pos_relative(o,gMarioObject,-20, 100, 40, 40);
-        
-        
-        if(o->header.gfx.unk38.animFrame >= 9) {
+
+        if(hasShot) {
+            if(o->header.gfx.unk38.animID == 2 || o->header.gfx.unk38.animID == 4) {
+                cur_obj_init_animation(0);
+            }
             o->header.gfx.unk38.animFrame = 0;
-            o->oAction = 0;
+            o->oArmCannonChargeTimer = 0;
+            hasShot = 0;
+        }
+
+        if(gMarioState->controller->buttonDown & B_BUTTON) {
+            o->oArmCannonChargeTimer++;
+        }
+
+        if(!(gMarioState->controller->buttonDown & B_BUTTON)) {
+                o->oAction = 3;
+        }else {
+            if(o->oArmCannonChargeTimer >= 5) {
+                o->oAction = 4;
+            }
+        }
+
+        break;
+    case 3:
+        obj_set_pos_relative(o,gMarioObject,-20, 100, 40, 40);
+        shoot_arm_cannon(gMarioState->beamSel);
+        break;
+    case 4:
+        obj_set_pos_relative(o,gMarioObject,-20, 100, 40, 40);
+        if(gMarioState->controller->buttonDown & B_BUTTON && !(hasShot)) {
+            if(o->header.gfx.unk38.animID != 5) {
+                cur_obj_init_animation(5);
+            }
+            o->oArmCannonChargeTimer++;
+        }else {
+            if(!(hasShot) && o->oArmCannonChargeTimer >= 8) {
+                cur_obj_init_animation(4);
+                spawn_object_relative_with_scale(0, 0, 0, 0, 5, o, MODEL_BEAM_POWER, bhvArmCannonShot);
+                hasShot = 1;
+            }else if(!(hasShot)) {
+                cur_obj_init_animation(4);
+                spawn_object_relative_with_scale(0, 0, 0, 0, 8, o, MODEL_BEAM_POWER, bhvArmCannonShot);
+                hasShot = 1;
+            }
+            if(o->header.gfx.unk38.animFrame >= 9) {
+                o->oAction = 0;
+            }
         }
         break;
-    
     default:
         break;
     }
     
+}
+
+void shoot_arm_cannon(s16 cannonType) {
+        if(o->header.gfx.unk38.animID != 2) {
+                cur_obj_init_animation(2);
+        }
+        if(o->header.gfx.unk38.animFrame == 3) {
+            canShoot = 1;
+        }else {
+            canShoot = 0;
+        }
+
+        if(canShoot) {
+            switch (cannonType)
+            {
+            case CANNON_BEAM_POWER:
+                cur_obj_play_sound_2(SOUND_OBJ_SNUFIT_SHOOT);
+                spawn_object_relative(0, 0, 0, 0, o, MODEL_BEAM_POWER, bhvArmCannonShot);
+                break;
+            case CANNON_BEAM_ICE:
+                cur_obj_play_sound_2(SOUND_OBJ_SNUFIT_SHOOT);
+                spawn_object_relative(0, 0, 0, 0, o, MODEL_BEAM_ICE, bhvArmCannonShot);
+                break;
+            case CANNON_BEAM_WAVE:
+                cur_obj_play_sound_2(SOUND_OBJ_SNUFIT_SHOOT);
+                spawn_object_relative(0, 0, 0, 0, o, MODEL_BEAM_WAVE, bhvArmCannonShot);
+                break;
+            case CANNON_BEAM_FIRE:
+                cur_obj_play_sound_2(SOUND_OBJ_SNUFIT_SHOOT);
+                spawn_object_relative(0, 0, 0, 0, o, MODEL_BEAM_FIRE, bhvArmCannonShot);
+                break;
+            default:
+                break;
+            }
+            canShoot = 0;
+            hasShot = 1;
+        }
+
+        if(o->header.gfx.unk38.animFrame >= 9) {
+            o->oAction = 0;
+        }
 }

@@ -1,1 +1,6 @@
+#include "anim_arm_cannonIdle.inc.c"
+#include "anim_arm_cannonChargeStart.inc.c"
+#include "anim_arm_cannonChargeEnd.inc.c"
+#include "anim_arm_cannonChargeHold.inc.c"
+#include "anim_arm_cannonWalk.inc.c"
 #include "anim_arm_cannonShot.inc.c"

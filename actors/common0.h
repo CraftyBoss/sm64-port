@@ -205,16 +205,86 @@ extern const Collision unknown_seg8_collision_080262F8[];
 
 // arm_cannon
 extern const GeoLayout cannon_geo[];
-extern Vtx arm_cannon_root_mesh_vtx_0[185];
-extern Gfx arm_cannon_root_mesh_tri_0[];
-extern Vtx arm_cannon_root_mesh_vtx_1[64];
-extern Gfx arm_cannon_root_mesh_tri_1[];
-extern Vtx arm_cannon_root_mesh_vtx_2[86];
-extern Gfx arm_cannon_root_mesh_tri_2[];
+extern Vtx arm_cannon_RootBone_mesh_vtx_0[120];
+extern Gfx arm_cannon_RootBone_mesh_tri_0[];
+extern Vtx arm_cannon_RootBone_mesh_vtx_1[86];
+extern Gfx arm_cannon_RootBone_mesh_tri_1[];
+extern Vtx arm_cannon_RootBone_mesh_vtx_2[80];
+extern Gfx arm_cannon_RootBone_mesh_tri_2[];
+extern Vtx arm_cannon_CannonRing1End_mesh_vtx_0[14];
+extern Gfx arm_cannon_CannonRing1End_mesh_tri_0[];
+extern Vtx arm_cannon_CannonRing1End_mesh_vtx_1[84];
+extern Gfx arm_cannon_CannonRing1End_mesh_tri_1[];
+extern Vtx arm_cannon_CannonRing1End_skinned_vtx_0[14];
+extern Gfx arm_cannon_CannonRing1End_skinned_tri_0[];
+extern Vtx arm_cannon_CannonRing2End_mesh_vtx_0[14];
+extern Gfx arm_cannon_CannonRing2End_mesh_tri_0[];
+extern Vtx arm_cannon_CannonRing2End_mesh_vtx_1[84];
+extern Gfx arm_cannon_CannonRing2End_mesh_tri_1[];
+extern Vtx arm_cannon_CannonRing2End_skinned_vtx_0[14];
+extern Gfx arm_cannon_CannonRing2End_skinned_tri_0[];
+extern Vtx arm_cannon_CannonRing3End_mesh_vtx_0[14];
+extern Gfx arm_cannon_CannonRing3End_mesh_tri_0[];
+extern Vtx arm_cannon_CannonRing3End_mesh_vtx_1[56];
+extern Gfx arm_cannon_CannonRing3End_mesh_tri_1[];
+extern Vtx arm_cannon_CannonRing3End_mesh_vtx_2[28];
+extern Gfx arm_cannon_CannonRing3End_mesh_tri_2[];
+extern Vtx arm_cannon_CannonRing3End_skinned_vtx_0[14];
+extern Gfx arm_cannon_CannonRing3End_skinned_tri_0[];
+extern Vtx arm_cannon_CannonSideEnd_mesh_vtx_0[25];
+extern Gfx arm_cannon_CannonSideEnd_mesh_tri_0[];
+extern Vtx arm_cannon_CannonSideEnd_mesh_vtx_1[20];
+extern Gfx arm_cannon_CannonSideEnd_mesh_tri_1[];
+extern Vtx arm_cannon_CannonTopEnd_mesh_vtx_0[40];
+extern Gfx arm_cannon_CannonTopEnd_mesh_tri_0[];
+extern Vtx arm_cannon_CannonTopEnd_mesh_vtx_1[32];
+extern Gfx arm_cannon_CannonTopEnd_mesh_tri_1[];
 
-extern Gfx arm_cannon_root_mesh[];
+extern Gfx arm_cannon_RootBone_mesh[];
+extern Gfx arm_cannon_CannonRing1End_mesh[];
+extern Gfx arm_cannon_CannonRing1End_skinned[];
+extern Gfx arm_cannon_CannonRing2End_mesh[];
+extern Gfx arm_cannon_CannonRing2End_skinned[];
+extern Gfx arm_cannon_CannonRing3End_mesh[];
+extern Gfx arm_cannon_CannonRing3End_skinned[];
+extern Gfx arm_cannon_CannonSideEnd_mesh[];
+extern Gfx arm_cannon_CannonTopEnd_mesh[];
 extern Gfx arm_cannon_material_revert_render_settings[];
 
 extern const struct Animation *const arm_cannon_anims[];
+
+// power beam shot
+extern const GeoLayout power_shot[];
+extern Vtx beam_power_Plane_mesh_vtx_0[4];
+extern Gfx beam_power_Plane_mesh_tri_0[];
+
+extern Gfx beam_power_Plane_mesh[];
+extern Gfx beam_power_material_revert_render_settings[];
+
+// ice beam shot
+extern const GeoLayout ice_shot[];
+extern Vtx beam_ice_Plane_mesh_vtx_0[4];
+extern Gfx beam_ice_Plane_mesh_tri_0[];
+
+extern Gfx beam_ice_Plane_mesh[];
+extern Gfx beam_ice_material_revert_render_settings[];
+
+// wave beam shot
+extern const GeoLayout wave_shot[];
+extern Vtx beam_wave_Plane_mesh_vtx_0[4];
+extern Gfx beam_wave_Plane_mesh_tri_0[];
+
+extern Gfx beam_wave_Plane_mesh[];
+extern Gfx beam_wave_material_revert_render_settings[];
+
+// fire beam shot
+extern const GeoLayout fire_shot[];
+extern Vtx beam_fire_Plane_mesh_vtx_0[4];
+extern Gfx beam_fire_Plane_mesh_tri_0[];
+
+extern Gfx beam_fire_Plane_mesh[];
+extern Gfx beam_fire_material_revert_render_settings[];
+
+
 
 #endif

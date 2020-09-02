@@ -50,8 +50,12 @@ s32 check_common_idle_cancels(struct MarioState *m) {
     }
     if(!m->isFPS) {
         if (m->input & INPUT_B_PRESSED) {
-            return set_mario_action(m, ACT_PUNCHING, 0);
+            set_mario_action(m, ACT_SHOOT_CANNON, 0);
             return FALSE;
+        }
+    }else {
+        if (m->input & INPUT_B_PRESSED) {
+            set_mario_action(m, ACT_SHOOT_CANNON, 0);
         }
     }
 
@@ -1123,6 +1127,14 @@ s32 check_common_stationary_cancels(struct MarioState *m) {
     return 0;
 }
 
+s32 act_shoot_cannon(struct MarioState *m) {
+    if(m->armCannon != NULL) {
+        m->armCannon->oAction = 2;
+    }
+    set_mario_action(m, m->prevAction, 0);
+    return TRUE;
+}
+
 s32 mario_execute_stationary_action(struct MarioState *m) {
     s32 sp24;
 
@@ -1136,6 +1148,7 @@ s32 mario_execute_stationary_action(struct MarioState *m) {
 
     /* clang-format off */
     switch (m->action) {
+        case ACT_SHOOT_CANNON:            sp24 = act_shoot_cannon(m);                     break;
         case ACT_IDLE:                    sp24 = act_idle(m);                             break;
         case ACT_START_SLEEPING:          sp24 = act_start_sleeping(m);                   break;
         case ACT_SLEEPING:                sp24 = act_sleeping(m);                         break;

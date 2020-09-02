@@ -566,7 +566,11 @@
 
 // custom model ids
 
-#define MODEL_ARM_CANNON                  0xF0         // arm_cannon_geo
+#define MODEL_ARM_CANNON                  0xF0        // arm_cannon_geo
+#define MODEL_BEAM_POWER                  0xF1        // beam_power_geo
+#define MODEL_BEAM_ICE                    0xF2        // beam_ice_geo
+#define MODEL_BEAM_WAVE                   0xF3        // beam_wave_geo
+#define MODEL_BEAM_FIRE                   0xF4        // beam_fire_geo
 
 // Menu Models (overwrites Level Geometry IDs)
 #define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0

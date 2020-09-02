@@ -40,6 +40,8 @@
 #define FRAME_INTERVAL_US_DENOMINATOR 3
 #endif
 
+#include "pc/hooks/mouse_hook.h"
+
 using namespace Microsoft::WRL; // For ComPtr
 
 static struct {
@@ -341,6 +343,9 @@ static void gfx_dxgi_get_dimensions(uint32_t *width, uint32_t *height) {
 }
 
 static void gfx_dxgi_handle_events(void) {
+
+    updateMouseHook(&dxgi.h_wnd);
+
     /*MSG msg;
     while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
         TranslateMessage(&msg);

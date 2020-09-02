@@ -478,7 +478,7 @@ void update_walking_speed(struct MarioState *m) {
         targetSpeed *= 6.25 / m->quicksandDepth;
     }
     if(m->isFPS) {
-        // m->forwardVel = targetSpeed;
+        m->forwardVel = targetSpeed;
     }else {
         if (m->forwardVel <= 0.0f) {
             m->forwardVel += 1.1f;
@@ -537,7 +537,7 @@ s32 check_ground_dive_or_punch(struct MarioState *m) {
     
     if (m->input & INPUT_B_PRESSED) {
         if(m->isFPS) {
-
+            set_mario_action(m, ACT_MOVING_SHOOT, 0);
         }else {
             //! Speed kick (shoutouts to SimpleFlips)
             if (m->forwardVel >= 29.0f && m->controller->stickMag > 48.0f) {
@@ -2043,6 +2043,14 @@ s32 check_common_moving_cancels(struct MarioState *m) {
     return FALSE;
 }
 
+s32 act_moving_shoot(struct MarioState *m) {
+    if(m->armCannon != NULL) {
+        m->armCannon->oAction = 2;
+    }
+    set_mario_action(m, m->prevAction, 0);
+    return TRUE;
+}
+
 s32 mario_execute_moving_action(struct MarioState *m) {
     s32 cancel;
 
@@ -2056,6 +2064,7 @@ s32 mario_execute_moving_action(struct MarioState *m) {
 
     /* clang-format off */
     switch (m->action) {
+        case ACT_MOVING_SHOOT:             cancel = act_moving_shoot(m);             break;
         case ACT_WALKING:                  cancel = act_walking(m);                  break;
         case ACT_HOLD_WALKING:             cancel = act_hold_walking(m);             break;
         case ACT_HOLD_HEAVY_WALKING:       cancel = act_hold_heavy_walking(m);       break;

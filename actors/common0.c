@@ -83,3 +83,8 @@ UNUSED static const u64 binid_18 = 18;
 #include "arm_cannon/anims/data.inc.c"
 #include "arm_cannon/anims/table.inc.c"
 UNUSED static const u64 binid_23 = 19;
+
+#include "beam_power/model.inc.c"
+#include "beam_ice/model.inc.c"
+#include "beam_wave/model.inc.c"
+#include "beam_fire/model.inc.c"
