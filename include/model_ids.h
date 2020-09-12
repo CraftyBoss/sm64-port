@@ -571,6 +571,7 @@
 #define MODEL_BEAM_ICE                    0xF2        // beam_ice_geo
 #define MODEL_BEAM_WAVE                   0xF3        // beam_wave_geo
 #define MODEL_BEAM_FIRE                   0xF4        // beam_fire_geo
+#define MODEL_IRIS_DOOR                   0xF5        // door_iris_geo
 
 // Menu Models (overwrites Level Geometry IDs)
 #define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0

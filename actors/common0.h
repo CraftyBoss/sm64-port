@@ -285,6 +285,9 @@ extern Gfx beam_fire_Plane_mesh_tri_0[];
 extern Gfx beam_fire_Plane_mesh[];
 extern Gfx beam_fire_material_revert_render_settings[];
 
-
+// iris door
+#include "door_iris/geo_header.h"
+#include "door_iris/anim_header.h"
+#include "door_iris/collision_header.h"
 
 #endif

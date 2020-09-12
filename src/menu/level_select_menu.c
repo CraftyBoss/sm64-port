@@ -139,11 +139,11 @@ int intro_default(void) {
 
 #ifndef VERSION_JP
     if (D_U_801A7C34 == 1) {
-        if (gGlobalTimer < 0x81) {
-            play_sound(SOUND_MARIO_HELLO, gDefaultSoundArgs);
-        } else {
-            play_sound(SOUND_MARIO_PRESS_START_TO_PLAY, gDefaultSoundArgs);
-        }
+        // if (gGlobalTimer < 0x81) {
+        //     play_sound(SOUND_MARIO_HELLO, gDefaultSoundArgs);
+        // } else {
+        //     play_sound(SOUND_MARIO_PRESS_START_TO_PLAY, gDefaultSoundArgs);
+        // }
         D_U_801A7C34 = 0;
     }
 #endif
@@ -185,8 +185,8 @@ int intro_game_over(void) {
 }
 
 int intro_play_its_a_me_mario(void) {
-    set_background_music(0, SEQ_SOUND_PLAYER, 0);
-    play_sound(SOUND_MENU_COIN_ITS_A_ME_MARIO, gDefaultSoundArgs);
+    //set_background_music(0, SEQ_SOUND_PLAYER, 0);
+    //play_sound(SOUND_MENU_COIN_ITS_A_ME_MARIO, gDefaultSoundArgs);
     return 1;
 }
 

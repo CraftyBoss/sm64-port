@@ -1491,16 +1491,16 @@ void update_mario_health(struct MarioState *m) {
         }
 
         if (m->healCounter > 0) {
-            m->health += 0x40;
+            m->health += 0x1;
             m->healCounter--;
         }
         if (m->hurtCounter > 0) {
-            m->health -= 0x40;
+            m->health -= 0x1;
             m->hurtCounter--;
         }
 
-        if (m->health >= 0x881) {
-            m->health = 0x880;
+        if (m->health >= 0x676) {
+            m->health = 0x676;
         }
         if (m->health < 0x100) {
             m->health = 0xFF;
@@ -1754,22 +1754,25 @@ void update_beam_selection(struct Controller *controller) {
 }
 
 void first_person_handler(struct MarioState *m) {
-    update_beam_selection(m->controller);
-    print_text_fmt_int(80,20, "beam %d", m->beamSel);
-    if(FALSE) {
+    // update_beam_selection(m->controller);
+    // print_text_fmt_int(70,20, "beam %d", m->beamSel);
+    if(TRUE) {
         if(m->armCannon != NULL) {
-            //print_text_fmt_int(20,20,"Ecks %d", m->armCannon->oPosX);
-            //print_text_fmt_int(20,40,"Y %d", m->armCannon->oPosY);
-            //print_text_fmt_int(20,60,"2 %d", m->armCannon->oPosZ);
 
-            print_text_fmt_int(140,80, "frame %d", m->armCannon->header.gfx.unk38.animFrame);
-            print_text_fmt_int(140,60, "anim %d", m->armCannon->header.gfx.unk38.animID);
-            print_text_fmt_int(140,40, "act %d", m->armCannon->oAction);
-            print_text_fmt_int(140,20, "time %d", m->armCannon->oArmCannonChargeTimer);
+            // print_text_fmt_int(140,80, "frame %d", m->armCannon->header.gfx.unk38.animFrame);
+            // print_text_fmt_int(140,60, "anim %d", m->armCannon->header.gfx.unk38.animID);
+            // print_text_fmt_int(140,40, "act %d", m->armCannon->oAction);
+            // print_text_fmt_int(140,20, "time %d", m->armCannon->oArmCannonChargeTimer);
 
         }
 
-        print_text_fmt_int(140,100, "beam %d", m->beamSel);
+        if(m->controller->buttonDown & U_JPAD) {
+            m->healCounter = 1;
+        }else if(m->controller->buttonDown & D_JPAD) {
+            m->hurtCounter = 1;
+        }
+
+        // print_text_fmt_int(140,20, "health %d", m->health - 0xFF);
         
         // print_text_fmt_int(20,20,"Ecks %d", m->area->camera->focus[0]);
         // print_text_fmt_int(20,40,"Y %d", m->area->camera->focus[1]);
@@ -1999,7 +2002,7 @@ void init_mario_from_save_file(void) {
     gMarioState->numKeys = 0;
 
     gMarioState->numLives = 4;
-    gMarioState->health = 0x880;
+    gMarioState->health = 0x676;
 
     gMarioState->prevNumStarsForDialog = gMarioState->numStars;
     gMarioState->unkB0 = 0xBD;

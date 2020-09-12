@@ -6128,3 +6128,19 @@ const BehaviorScript bhvArmCannonShot[] = {
         CALL_NATIVE(bhv_arm_cannon_shot_loop),
     END_LOOP(),
 };
+
+const BehaviorScript bhvIrisDoor[] = {
+    BEGIN(OBJ_LIST_SURFACE),
+    OR_INT(oFlags, (OBJ_FLAG_ACTIVE_FROM_AFAR | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_ANIMATIONS(oAnimations, door_iris_anims),
+    ANIMATE(0),
+    LOAD_COLLISION_DATA(door_iris_collision),
+    SET_HITBOX(/*Radius*/ 80, /*Height*/ 100),
+    SET_INT(oIntangibleTimer, 0),
+    SET_FLOAT(oCollisionDistance, 1000),
+    SET_HOME(),
+    CALL_NATIVE(bhv_door_iris_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_door_iris_loop),
+    END_LOOP(),
+};

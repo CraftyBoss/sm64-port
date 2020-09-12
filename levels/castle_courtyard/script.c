@@ -11,6 +11,7 @@
 
 #include "levels/scripts.h"
 
+#include "actors/common0.h"
 #include "actors/common1.h"
 
 #include "make_const_nonconst.h"
@@ -32,12 +33,14 @@ const LevelScript level_castle_courtyard_entry[] = {
 	LOAD_MODEL_FROM_GEO(MODEL_COURTYARD_SPIKY_TREE, spiky_tree_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_COURTYARD_WOODEN_DOOR, wooden_door_geo), 
 	LOAD_MODEL_FROM_GEO(MODEL_LEVEL_GEOMETRY_03, castle_courtyard_geo_000200), 
+	LOAD_MODEL_FROM_GEO(MODEL_IRIS_DOOR, door_iris_geo), 
 
 	AREA(1, castle_courtyard_area_1),
 		WARP_NODE(0x0A, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(0xF0, LEVEL_CASTLE_COURTYARD, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(0xF1, LEVEL_CASTLE_COURTYARD, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_NONE, 0, 256, 0, 0, 0, 0, 0x00F00000, bhvPaintingDeathWarp),
+		OBJECT(MODEL_IRIS_DOOR, -3673, 422, 575, 0, -90, 0, 0x00000001, bhvIrisDoor),
 		OBJECT(MODEL_GOOMBA, 512, 256, 0, 0, 0, 0, 0x00000000, bhvGoomba),
 		OBJECT(MODEL_NONE, 0, 256, 0, 0, 0, 0, 0x000A0000, bhvSpinAirborneWarp),
 		MARIO_POS(0x01, 0, 0, 256, 0),

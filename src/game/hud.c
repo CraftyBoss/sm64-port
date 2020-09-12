@@ -770,9 +770,22 @@ void render_hud(void) {
             render_hud_holo3(SCREEN_WIDTH - 128,32,32,32,32,0);
             render_hud_holo5(SCREEN_WIDTH - 96,156,64,64,64,0);
 
+            s16 healthOffset = 0x613;
+            s16 healthTanks = 13;
+            while(gMarioState->health - healthOffset < 0) {
+                healthOffset -= 0x64;
+                healthTanks--;
+            }
+            for (size_t i = 0; i < healthTanks; i++)
+            {
+                u8 boxOffset = i * 5;
+                hud_display_box(128 + boxOffset,49,132 + boxOffset, 53,123,187, 196);
+            }
+
+
             // Holo Middle
             render_hud_holo4(128,30,64,16,0,0);
-            hud_display_box(128,56, 128 + (64.0f * ((gMarioState->health >> 8) / 8.0f)), 56 + 4,123,187, 196);
+            hud_display_box(128,56, 128 + (64.0f * ((gMarioState->health - healthOffset) / 99.0f)), 56 + 4,123,187, 196);
 
             // Helmet Left
             render_hud_helm2(32,224,128,16,0,0);
@@ -780,9 +793,9 @@ void render_hud(void) {
             render_hud_helm2(SCREEN_WIDTH - 160,224,128,16,128,0);
             // Helmet Middle
             render_hud_helm(32,0,256,32,0,0);
-
+            
             //Life count
-            print_text_fmt_int(91, SCREEN_HEIGHT - 63,"%02d", gMarioState->health >> 8);
+            print_text_fmt_int(91, SCREEN_HEIGHT - 63,"%02d", gMarioState->health - healthOffset);
         }
         
         if (gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {

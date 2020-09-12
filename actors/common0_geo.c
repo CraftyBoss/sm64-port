@@ -27,8 +27,10 @@
 #include "metal_box/geo.inc.c"
 #include "exclamation_box_outline/geo.inc.c"
 #include "koopa_shell/geo.inc.c"
+
 #include "arm_cannon/geo.inc.c"
 #include "beam_power/geo.inc.c"
 #include "beam_ice/geo.inc.c"
 #include "beam_wave/geo.inc.c"
 #include "beam_fire/geo.inc.c"
+#include "door_iris/geo.inc.c"

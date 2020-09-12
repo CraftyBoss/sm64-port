@@ -554,10 +554,14 @@ void bhv_volcano_trap_loop(void);
 
 // custom behavior defines
 
+//arm cannon
 void bhv_arm_cannon_init(void);
 void bhv_arm_cannon_loop(void);
 void bhv_arm_cannon_shot_init(void);
 void bhv_arm_cannon_shot_loop(void);
+// iris door
+void bhv_door_iris_init(void);
+void bhv_door_iris_loop(void);
 
 Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 

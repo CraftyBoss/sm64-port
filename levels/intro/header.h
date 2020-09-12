@@ -10,7 +10,17 @@ extern const GeoLayout intro_geo_0003B8[];
 extern const GeoLayout intro_geo_000414[];
 
 // leveldata
-extern const Gfx intro_seg7_dl_0700B3A0[];
+extern Vtx primelogo_Circle_mesh_vtx_0[420];
+extern Gfx primelogo_Circle_mesh_tri_0[];
+extern Vtx primelogo_Circle_mesh_vtx_1[503];
+extern Gfx primelogo_Circle_mesh_tri_1[];
+extern Vtx primelogo_Circle_mesh_vtx_2[92];
+extern Gfx primelogo_Circle_mesh_tri_2[];
+extern Vtx primelogo_Circle_mesh_vtx_3[493];
+extern Gfx primelogo_Circle_mesh_tri_3[];
+
+extern Gfx primelogo_Circle_mesh[];
+
 extern const Gfx intro_seg7_dl_0700C6A0[];
 extern const f32 intro_seg7_table_0700C790[];
 extern const f32 intro_seg7_table_0700C880[];

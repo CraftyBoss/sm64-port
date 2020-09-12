@@ -1,0 +1,28 @@
+#include "src/game/envfx_snow.h"
+
+const GeoLayout door_iris_geo[] = {
+	GEO_NODE_START(),
+	GEO_OPEN_NODE(),
+		GEO_TRANSLATE_ROTATE(1, 0, 0, 0, 0, -180, 0),
+		GEO_OPEN_NODE(),
+			GEO_ANIMATED_PART(1, 0, 0, 0, door_iris_RootBone_mesh),
+			GEO_OPEN_NODE(),
+				GEO_ANIMATED_PART(1, 0, 0, 0, door_iris_DoorGlowScaler_mesh),
+				GEO_ANIMATED_PART(1, 113, 37, 0, door_iris_DoorIris1_mesh),
+				GEO_ANIMATED_PART(1, 0, 119, 0, door_iris_DoorIris2_mesh),
+				GEO_ANIMATED_PART(1, -113, 37, 0, door_iris_DoorIris3_mesh),
+				GEO_ANIMATED_PART(1, -70, -96, 0, door_iris_DoorIris4_mesh),
+				GEO_ANIMATED_PART(1, 70, -96, 0, door_iris_DoorIris5_mesh),
+			GEO_CLOSE_NODE(),
+		GEO_CLOSE_NODE(),
+		GEO_DISPLAY_LIST(0, door_iris_material_revert_render_settings),
+		GEO_DISPLAY_LIST(1, door_iris_material_revert_render_settings),
+		GEO_DISPLAY_LIST(2, door_iris_material_revert_render_settings),
+		GEO_DISPLAY_LIST(3, door_iris_material_revert_render_settings),
+		GEO_DISPLAY_LIST(4, door_iris_material_revert_render_settings),
+		GEO_DISPLAY_LIST(5, door_iris_material_revert_render_settings),
+		GEO_DISPLAY_LIST(6, door_iris_material_revert_render_settings),
+		GEO_DISPLAY_LIST(7, door_iris_material_revert_render_settings),
+	GEO_CLOSE_NODE(),
+	GEO_END(),
+};
