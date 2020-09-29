@@ -384,17 +384,17 @@ void save_file_collect_star_or_key(s16 coinScore, s16 starIndex) {
     }
 
     switch (gCurrLevelNum) {
-        case LEVEL_BOWSER_1:
-            if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR))) {
-                save_file_set_flags(SAVE_FLAG_HAVE_KEY_1);
-            }
-            break;
+        // case LEVEL_BOWSER_1:
+        //     if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_1 | SAVE_FLAG_UNLOCKED_BASEMENT_DOOR))) {
+        //         save_file_set_flags(SAVE_FLAG_HAVE_KEY_1);
+        //     }
+        //     break;
 
-        case LEVEL_BOWSER_2:
-            if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))) {
-                save_file_set_flags(SAVE_FLAG_HAVE_KEY_2);
-            }
-            break;
+        // case LEVEL_BOWSER_2:
+        //     if (!(save_file_get_flags() & (SAVE_FLAG_HAVE_KEY_2 | SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR))) {
+        //         save_file_set_flags(SAVE_FLAG_HAVE_KEY_2);
+        //     }
+        //     break;
 
         case LEVEL_BOWSER_3:
             break;
@@ -532,25 +532,36 @@ void save_file_set_cannon_unlocked(void) {
     gSaveFileModified = TRUE;
 }
 
-void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
-    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+// void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
+//     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
 
-    saveFile->capLevel = gCurrLevelNum;
-    saveFile->capArea = gCurrAreaIndex;
-    vec3s_set(saveFile->capPos, x, y, z);
-    save_file_set_flags(SAVE_FLAG_CAP_ON_GROUND);
-}
+//     saveFile->capLevel = gCurrLevelNum;
+//     saveFile->capArea = gCurrAreaIndex;
+//     vec3s_set(saveFile->capPos, x, y, z);
+//     save_file_set_flags(SAVE_FLAG_CAP_ON_GROUND);
+// }
 
 s32 save_file_get_cap_pos(Vec3s capPos) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
     s32 flags = save_file_get_flags();
 
-    if (saveFile->capLevel == gCurrLevelNum && saveFile->capArea == gCurrAreaIndex
-        && (flags & SAVE_FLAG_CAP_ON_GROUND)) {
-        vec3s_copy(capPos, saveFile->capPos);
-        return TRUE;
-    }
+    // if (saveFile->capLevel == gCurrLevelNum && saveFile->capArea == gCurrAreaIndex
+    //     && (flags & SAVE_FLAG_CAP_ON_GROUND)) {
+    //     vec3s_copy(capPos, saveFile->capPos);
+    //     return TRUE;
+    // }
     return FALSE;
+}
+
+u8 save_file_get_etank_count(void) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    return saveFile->eTankCount;
+}
+
+void save_file_set_etank_count(u8 count) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    saveFile->eTankCount = count;
+    gSaveFileModified = TRUE;
 }
 
 void save_file_set_sound_mode(u16 mode) {

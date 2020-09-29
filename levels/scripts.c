@@ -71,6 +71,7 @@ const LevelScript level_main_scripts_entry[] = {
     LOAD_MODEL_FROM_GEO(MODEL_BEAM_ICE,                ice_shot),
     LOAD_MODEL_FROM_GEO(MODEL_BEAM_WAVE,               wave_shot),
     LOAD_MODEL_FROM_GEO(MODEL_BEAM_FIRE,               fire_shot),
+    LOAD_MODEL_FROM_GEO(MODEL_MORPH_BALL,              morph_ball_geo),
     LOAD_MODEL_FROM_GEO(MODEL_SMOKE,                   smoke_geo),
     LOAD_MODEL_FROM_GEO(MODEL_SPARKLES,                sparkles_geo),
     LOAD_MODEL_FROM_GEO(MODEL_BUBBLE,                  bubble_geo),

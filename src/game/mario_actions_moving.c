@@ -2043,12 +2043,100 @@ s32 check_common_moving_cancels(struct MarioState *m) {
     return FALSE;
 }
 
+void update_ball_speed(struct MarioState *m) {
+    f32 maxTargetSpeed;
+    f32 targetSpeed;
+
+    if (m->floorHeight < m->waterLevel) {
+        m->floorHeight = m->waterLevel;
+        m->floor = &gWaterSurfacePseudoFloor;
+        m->floor->originOffset = m->waterLevel; //! Negative origin offset
+    }
+
+    if (m->floor != NULL && m->floor->type == SURFACE_SLOW) {
+        maxTargetSpeed = 48.0f;
+    } else {
+        maxTargetSpeed = 64.0f;
+    }
+
+    targetSpeed = m->intendedMag * 2.0f;
+    if (targetSpeed > maxTargetSpeed) {
+        targetSpeed = maxTargetSpeed;
+    }
+
+    if (m->forwardVel <= 0.0f) {
+        m->forwardVel += 1.1f;
+    } else if (m->forwardVel <= targetSpeed) {
+        m->forwardVel += 1.1f - m->forwardVel / 58.0f;
+    } else if (m->floor->normal.y >= 0.95f) {
+        m->forwardVel -= 1.0f;
+    }
+
+    //! No backward speed cap (shell hyperspeed)
+    if (m->forwardVel > 64.0f) {
+        m->forwardVel = 64.0f;
+    }
+
+    if(analog_stick_held_back(m) && m->forwardVel >= 16.0f) {
+
+    }else {
+        
+    }
+
+    m->faceAngle[1] =
+        m->intendedYaw - approach_s32((s16)(m->intendedYaw - m->faceAngle[1]), 0, 0x800, 0x800);
+
+    apply_slope_accel(m);
+}
+
 s32 act_moving_shoot(struct MarioState *m) {
     if(m->armCannon != NULL) {
         m->armCannon->oAction = 2;
     }
     set_mario_action(m, m->prevAction, 0);
     return TRUE;
+}
+
+s32 act_morph_ball(struct MarioState *m) {
+
+    if (m->input & INPUT_A_PRESSED) {
+        return set_mario_action(m, ACT_MORPH_BALL_JUMP, 0);
+    }
+
+    if (m->input & INPUT_Z_PRESSED) {
+        if (m->forwardVel < 24.0f) {
+            mario_set_forward_vel(m, 24.0f);
+        }
+        return set_mario_action(m, ACT_CROUCH_SLIDE, 0);
+    }
+
+    update_ball_speed(m);
+    if(!(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_INVISIBLE)) {
+        m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
+    }
+
+    switch (perform_ground_step(m)) {
+        case GROUND_STEP_LEFT_GROUND:
+            set_mario_action(m, ACT_MORPH_BALL_AIR, 0);
+            break;
+
+        case GROUND_STEP_HIT_WALL:
+            mario_set_forward_vel(m, 0.0f);
+            break;
+    }
+
+    if (m->floor->type == SURFACE_BURNING) {
+        
+    } else {
+        
+    }
+
+    adjust_sound_for_speed(m);
+    return FALSE;
+}
+
+s32 act_morph_ball_turn(struct MarioState *m) {
+    return FALSE;
 }
 
 s32 mario_execute_moving_action(struct MarioState *m) {
@@ -2064,6 +2152,8 @@ s32 mario_execute_moving_action(struct MarioState *m) {
 
     /* clang-format off */
     switch (m->action) {
+        case ACT_MORPH_BALL_TURN_AROUND:   cancel = act_morph_ball_turn(m);          break;
+        case ACT_MORPH_BALL_GROUND:        cancel = act_morph_ball(m);               break;
         case ACT_MOVING_SHOOT:             cancel = act_moving_shoot(m);             break;
         case ACT_WALKING:                  cancel = act_walking(m);                  break;
         case ACT_HOLD_WALKING:             cancel = act_hold_walking(m);             break;

@@ -788,6 +788,9 @@ static u32 set_mario_action_airborne(struct MarioState *m, u32 action, u32 actio
     }
 
     switch (action) {
+        case ACT_MORPH_BALL_JUMP:
+            m->vel[1] = 41.0f;
+            break;
         case ACT_DOUBLE_JUMP:
             set_mario_y_vel_based_on_fspeed(m, 52.0f, 0.25f);
             m->forwardVel *= 0.8f;
@@ -1499,8 +1502,8 @@ void update_mario_health(struct MarioState *m) {
             m->hurtCounter--;
         }
 
-        if (m->health >= 0x676) {
-            m->health = 0x676;
+        if (m->health >= ((gMarioState->totalETanks + 1) * 100 - 1) + 0xFF) {
+            m->health = ((gMarioState->totalETanks + 1) * 100 - 1) + 0xFF;
         }
         if (m->health < 0x100) {
             m->health = 0xFF;
@@ -1728,27 +1731,24 @@ void update_fps_cam_input(struct MarioState *m) {
         m->faceAngle[0] = -DEGREES(40);
     }
 
-    if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) && m->isFPS) {
-            m->isFPS = FALSE;
-            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_ACTIVE;
-    }
 }
 
-struct Object *spawn_arm_cannon(struct MarioState *m) {
+struct Object *spawn_samus_objs(struct MarioState *m) {
     struct Object *o;
     o = spawn_object_relative(0, 0, 0, 0, m->marioObj, MODEL_ARM_CANNON, bhvArmCannon);
     o->parentObj = m->marioObj;
+    m->mBallObj = spawn_object_relative(0,0,0,0,m->marioObj, MODEL_MORPH_BALL, bhvMorphBall);
     return o;
 }
 
 void update_beam_selection(struct Controller *controller) {
-    if(controller->buttonDown & U_JPAD) {
+    if(controller->buttonPressed & U_JPAD) {
         gMarioState->beamSel = CANNON_BEAM_POWER;
-    }else if(controller->buttonDown & D_JPAD) {
+    }else if(controller->buttonPressed & D_JPAD) {
         gMarioState->beamSel = CANNON_BEAM_ICE;
-    }else if(controller->buttonDown & L_JPAD) {
+    }else if(controller->buttonPressed & L_JPAD) {
         gMarioState->beamSel = CANNON_BEAM_FIRE;
-    }else if(controller->buttonDown & R_JPAD) {
+    }else if(controller->buttonPressed & R_JPAD) {
         gMarioState->beamSel = CANNON_BEAM_WAVE;
     }
 }
@@ -1766,13 +1766,35 @@ void first_person_handler(struct MarioState *m) {
 
         }
 
-        if(m->controller->buttonDown & U_JPAD) {
-            m->healCounter = 1;
-        }else if(m->controller->buttonDown & D_JPAD) {
-            m->hurtCounter = 1;
+
+        if(m->mBallObj != NULL && FALSE) {
+            print_text_fmt_int(140,20, "spd %d", m->mBallObj->oForwardVel);
+            print_text_fmt_int(140,40, "pitch %d", m->mBallObj->oFaceAnglePitch);
+            print_text_fmt_int(140,60, "roll %d", m->mBallObj->oFaceAngleRoll);
+            print_text_fmt_int(140,80, "yaw %d", m->mBallObj->oFaceAngleYaw);
         }
 
-        // print_text_fmt_int(140,20, "health %d", m->health - 0xFF);
+
+        if(m->controller->buttonDown & U_JPAD) {
+            m->healCounter = 10;
+        }else if(m->controller->buttonDown & D_JPAD) {
+            m->hurtCounter = 10;
+        }else if(m->controller->buttonPressed & L_JPAD) {
+            m->totalETanks -= 1;
+            save_file_set_etank_count(m->totalETanks);
+            save_file_do_save(gCurrSaveFileNum - 1);
+        }else if(m->controller->buttonPressed & R_JPAD) {
+            m->totalETanks += 1;
+            save_file_set_etank_count(m->totalETanks);
+            save_file_do_save(gCurrSaveFileNum - 1);
+        }
+        
+        //print_text_fmt_int(140,60, ", cur room %d", gMarioCurrentRoom);
+        //print_text_fmt_int(140,20, "ad room 0 %d", gDoorAdjacentRooms[gMarioCurrentRoom][0]);
+        //print_text_fmt_int(140,40, "ad room 1 %d", gDoorAdjacentRooms[gMarioCurrentRoom][1]);
+
+        //print_text_fmt_int(140,40, "health %d", m->health - 0xFF);
+        //print_text_fmt_int(140,20,"tanks %d", m->totalETanks);
         
         // print_text_fmt_int(20,20,"Ecks %d", m->area->camera->focus[0]);
         // print_text_fmt_int(20,40,"Y %d", m->area->camera->focus[1]);
@@ -1784,27 +1806,34 @@ void first_person_handler(struct MarioState *m) {
     }
 
     if(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) {
-        if(!(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_INVISIBLE) && m->area->camera->cutscene == 0) {
-            m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
+        if(!m->isFPS) {
             m->isFPS = TRUE;
-            m->armCannon = spawn_arm_cannon(m);
+            if(!(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_INVISIBLE) && m->area->camera->cutscene == 0) {
+                m->marioObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
+            }
+            if(m->mBallObj != NULL) {
+                if(!(m->mBallObj->header.gfx.node.flags & GRAPH_RENDER_INVISIBLE)) {
+                    m->mBallObj->header.gfx.node.flags |= GRAPH_RENDER_INVISIBLE;
+                }
+            }
+            
+            set_mario_action(m,ACT_WALKING,0);
+            m->armCannon = spawn_samus_objs(m);
         }
         if(m->area->camera->cutscene != 0) {
-            m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
             m->isFPS = FALSE;
             if(m->armCannon != NULL) {
                 m->armCannon->oAction = 1;
             }
         }
 
-    }else if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON)) {
-        if(m->marioObj->header.gfx.node.flags & GRAPH_RENDER_INVISIBLE) {
-            m->marioObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
-            m->isFPS = FALSE;
-            if(m->armCannon != NULL) {
-                m->armCannon->oAction = 1;
-            }
+    }else if(!(set_cam_angle(0) == CAM_ANGLE_FIRST_PERSON) && m->isFPS) {
+        m->isFPS = FALSE;
+        m->mBallObj->header.gfx.node.flags &= ~GRAPH_RENDER_INVISIBLE;
+        if(m->armCannon != NULL) {
+            m->armCannon->oAction = 1;
         }
+        set_mario_action(m,ACT_MORPH_BALL_GROUND,0);
     }
 }
 
@@ -1935,6 +1964,7 @@ void init_mario(void) {
     gMarioState->heldObj = NULL;
     gMarioState->riddenObj = NULL;
     gMarioState->usedObj = NULL;
+    gMarioState->armCannon = NULL;
 
     gMarioState->waterLevel =
         find_water_level(gMarioSpawnInfo->startPos[0], gMarioSpawnInfo->startPos[2]);
@@ -2000,12 +2030,14 @@ void init_mario_from_save_file(void) {
     gMarioState->numStars =
         save_file_get_total_star_count(gCurrSaveFileNum - 1, COURSE_MIN - 1, COURSE_MAX - 1);
     gMarioState->numKeys = 0;
+    gMarioState->totalETanks = save_file_get_etank_count();
 
     gMarioState->numLives = 4;
-    gMarioState->health = 0x676;
+    gMarioState->health = ((gMarioState->totalETanks + 1) * 100 - 1) + 0xFF;
 
     gMarioState->prevNumStarsForDialog = gMarioState->numStars;
     gMarioState->unkB0 = 0xBD;
+
 
     gHudDisplay.coins = 0;
     gHudDisplay.wedges = 8;

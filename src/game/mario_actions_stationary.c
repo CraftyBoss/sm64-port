@@ -564,7 +564,8 @@ s32 act_crouching(struct MarioState *m) {
     }
 
     if (m->input & INPUT_NONZERO_ANALOG) {
-        return set_mario_action(m, ACT_START_CRAWLING, 0);
+        return set_mario_action(m, ACT_MORPH_BALL_GROUND, 0);
+        
     }
 
     if (m->input & INPUT_B_PRESSED) {

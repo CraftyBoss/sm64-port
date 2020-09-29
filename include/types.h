@@ -331,6 +331,7 @@ struct MarioState
     /*0x76*/ s16 waterLevel;
     /*0x78*/ struct Object *interactObj;
     /*0x79*/ struct Object *armCannon;
+    /*0x7A*/ struct Object *mBallObj;
     /*0x7C*/ struct Object *heldObj;
     /*0x80*/ struct Object *usedObj;
     /*0x84*/ struct Object *riddenObj;
@@ -356,6 +357,7 @@ struct MarioState
     /*0xB6*/ u16 capTimer;
     /*0xB7*/ enum cannonBeamTypes beamSel;
     /*0xB8*/ s16 prevNumStarsForDialog;
+    /*0xB9*/ u8 totalETanks;
     /*0xBC*/ f32 peakHeight;
     /*0xC0*/ f32 quicksandDepth;
     /*0xC4*/ f32 unkC4;

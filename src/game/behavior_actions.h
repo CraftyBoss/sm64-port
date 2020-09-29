@@ -562,6 +562,9 @@ void bhv_arm_cannon_shot_loop(void);
 // iris door
 void bhv_door_iris_init(void);
 void bhv_door_iris_loop(void);
+// morph ball
+void bhv_morph_ball_init(void);
+void bhv_morph_ball_loop(void);
 
 Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 

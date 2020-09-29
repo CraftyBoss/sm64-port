@@ -34,3 +34,4 @@
 #include "beam_wave/geo.inc.c"
 #include "beam_fire/geo.inc.c"
 #include "door_iris/geo.inc.c"
+#include "morph_ball/geo.inc.c"

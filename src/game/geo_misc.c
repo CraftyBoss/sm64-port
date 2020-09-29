@@ -77,8 +77,8 @@ s16 round_float(f32 num) {
 /**
  * Create a display list for the light in the castle lobby that shows the
  * player where to look to enter Tower of the Wing Cap.
- */
-Gfx *geo_exec_inside_castle_light(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]) {
+ * (REMOVED FOR METROID PRIME 64)
+ * Gfx *geo_exec_inside_castle_light(s32 callContext, struct GraphNode *node, UNUSED f32 mtx[4][4]) {
     s32 flags;
     struct GraphNodeGenerated *generatedNode;
     Gfx *displayListHead = NULL;
@@ -105,6 +105,8 @@ Gfx *geo_exec_inside_castle_light(s32 callContext, struct GraphNode *node, UNUSE
 
     return displayList;
 }
+ */
+
 
 /**
  * Update static timer variables that control the flying carpets' ripple effect.

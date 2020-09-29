@@ -806,13 +806,13 @@ s32 act_unlocking_key_door(struct MarioState *m) {
     stop_and_set_height_to_floor(m);
 
     if (is_anim_at_end(m)) {
-        if (m->usedObj->oBehParams >> 24 == 1) {
-            save_file_set_flags(SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR);
-            save_file_clear_flags(SAVE_FLAG_HAVE_KEY_2);
-        } else {
-            save_file_set_flags(SAVE_FLAG_UNLOCKED_BASEMENT_DOOR);
-            save_file_clear_flags(SAVE_FLAG_HAVE_KEY_1);
-        }
+        // if (m->usedObj->oBehParams >> 24 == 1) {
+        //     save_file_set_flags(SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR);
+        //     save_file_clear_flags(SAVE_FLAG_HAVE_KEY_2);
+        // } else {
+        //     save_file_set_flags(SAVE_FLAG_UNLOCKED_BASEMENT_DOOR);
+        //     save_file_clear_flags(SAVE_FLAG_HAVE_KEY_1);
+        // }
         set_mario_action(m, ACT_WALKING, 0);
     }
 
@@ -1178,7 +1178,7 @@ s32 act_death_exit(struct MarioState *m) {
         m->healCounter = 31;
     }
     // one unit of health
-    m->health = 0x0100;
+    m->health = 0x0164;
     return FALSE;
 }
 

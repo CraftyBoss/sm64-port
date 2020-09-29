@@ -2056,6 +2056,27 @@ s32 check_common_airborne_cancels(struct MarioState *m) {
     return FALSE;
 }
 
+s32 act_morph_ball_air(struct MarioState *m) {
+    play_mario_sound(m, SOUND_ACTION_TERRAIN_JUMP, 0);
+
+    update_air_without_turn(m);
+
+    switch (perform_air_step(m, 0)) {
+        case AIR_STEP_LANDED:
+            set_mario_action(m, ACT_MORPH_BALL_GROUND, 1);
+            break;
+
+        case AIR_STEP_HIT_WALL:
+            mario_set_forward_vel(m, 0.0f);
+            break;
+
+        case AIR_STEP_HIT_LAVA_WALL:
+            lava_boost_on_wall(m);
+            break;
+    }
+    return FALSE;
+}
+
 s32 mario_execute_airborne_action(struct MarioState *m) {
     u32 cancel;
 
@@ -2067,6 +2088,8 @@ s32 mario_execute_airborne_action(struct MarioState *m) {
 
     /* clang-format off */
     switch (m->action) {
+        case ACT_MORPH_BALL_JUMP:
+        case ACT_MORPH_BALL_AIR:       cancel = act_morph_ball_air(m);       break;
         case ACT_JUMP:                 cancel = act_jump(m);                 break;
         case ACT_DOUBLE_JUMP:          cancel = act_double_jump(m);          break;
         case ACT_FREEFALL:             cancel = act_freefall(m);             break;

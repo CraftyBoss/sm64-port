@@ -19,7 +19,9 @@ void bhv_door_iris_loop(void) {
     case 1: // door opening
         if(cur_obj_check_if_at_animation_end()) {
             o->oTimer = 0;
-            o->oAction = 2;
+            if(o->oDistanceToMario < 1000.0f) { // check if player is 500 units away
+                o->oAction = 2;
+            }
         }
         break;
     case 2: // check if door has been open for 2 seconds
@@ -42,4 +44,31 @@ void bhv_door_iris_loop(void) {
 void bhv_door_iris_init(void) {
     o->oTimer = 0;
     o->oAction = 0;
+    // this section finds what rooms are adjacent to the room the door is currently in
+    f32 x = o->oPosX;
+    f32 z = o->oPosZ;
+    struct Surface *floor;
+    find_floor(x, o->oPosY, z, &floor); // finds room door is in
+    if (floor != NULL) {
+        o->oDoorUnkF8 = floor->room;
+    }
+
+    x = o->oPosX + sins(o->oMoveAngleYaw) * 200.0f; 
+    z = o->oPosZ + coss(o->oMoveAngleYaw) * 200.0f;
+    find_floor(x, o->oPosY, z, &floor); // finds forward adjacent room
+    if (floor != NULL) {
+        o->oDoorUnkFC = floor->room;
+    }
+
+    x = o->oPosX + sins(o->oMoveAngleYaw) * -200.0f; 
+    z = o->oPosZ + coss(o->oMoveAngleYaw) * -200.0f;
+    find_floor(x, o->oPosY, z, &floor); // finds backward adjacent room
+    if (floor != NULL) {
+        o->oDoorUnk100 = floor->room;
+    }
+
+    if (o->oDoorUnkF8 > 0 && o->oDoorUnkF8 < 60) { // if room door is currently in is room 1-60, set global adj room array values
+        gDoorAdjacentRooms[o->oDoorUnkF8][0] = o->oDoorUnkFC;
+        gDoorAdjacentRooms[o->oDoorUnkF8][1] = o->oDoorUnk100;
+    }
 }

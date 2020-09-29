@@ -6144,3 +6144,13 @@ const BehaviorScript bhvIrisDoor[] = {
         CALL_NATIVE(bhv_door_iris_loop),
     END_LOOP(),
 };
+
+const BehaviorScript bhvMorphBall[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW)),
+    CALL_NATIVE(bhv_morph_ball_init),
+    BEGIN_LOOP(),
+        SET_INT(oIntangibleTimer, 0),
+        CALL_NATIVE(bhv_morph_ball_loop),
+    END_LOOP(),
+};

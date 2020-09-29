@@ -348,7 +348,7 @@ void mario_blow_off_cap(struct MarioState *m, f32 capSpeed) {
     struct Object *capObject;
 
     if (does_mario_have_hat(m)) {
-        save_file_set_cap_pos(m->pos[0], m->pos[1], m->pos[2]);
+        // save_file_set_cap_pos(m->pos[0], m->pos[1], m->pos[2]);
 
         m->flags &= ~(MARIO_NORMAL_CAP | MARIO_CAP_ON_HEAD);
 
@@ -905,34 +905,34 @@ u32 interact_warp_door(struct MarioState *m, UNUSED u32 interactType, struct Obj
     u32 actionArg;
 
     if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
-        if (warpDoorId == 1 && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
-            if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2)) {
-                if (!sDisplayingDoorText) {
-                    set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
-                                     (saveFlags & SAVE_FLAG_HAVE_KEY_1) ? DIALOG_023 : DIALOG_022);
-                }
-                sDisplayingDoorText = TRUE;
+        // if (warpDoorId == 1 && !(saveFlags & SAVE_FLAG_UNLOCKED_UPSTAIRS_DOOR)) {
+        //     if (!(saveFlags & SAVE_FLAG_HAVE_KEY_2)) {
+        //         if (!sDisplayingDoorText) {
+        //             set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
+        //                              (saveFlags & SAVE_FLAG_HAVE_KEY_1) ? DIALOG_023 : DIALOG_022);
+        //         }
+        //         sDisplayingDoorText = TRUE;
 
-                return FALSE;
-            }
+        //         return FALSE;
+        //     }
 
-            doorAction = ACT_UNLOCKING_KEY_DOOR;
-        }
+        //     doorAction = ACT_UNLOCKING_KEY_DOOR;
+        // }
 
-        if (warpDoorId == 2 && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
-            if (!(saveFlags & SAVE_FLAG_HAVE_KEY_1)) {
-                if (!sDisplayingDoorText) {
-                    // Moat door skip was intended confirmed
-                    set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
-                                     (saveFlags & SAVE_FLAG_HAVE_KEY_2) ? DIALOG_023 : DIALOG_022);
-                }
-                sDisplayingDoorText = TRUE;
+        // if (warpDoorId == 2 && !(saveFlags & SAVE_FLAG_UNLOCKED_BASEMENT_DOOR)) {
+        //     if (!(saveFlags & SAVE_FLAG_HAVE_KEY_1)) {
+        //         if (!sDisplayingDoorText) {
+        //             // Moat door skip was intended confirmed
+        //             set_mario_action(m, ACT_READING_AUTOMATIC_DIALOG,
+        //                              (saveFlags & SAVE_FLAG_HAVE_KEY_2) ? DIALOG_023 : DIALOG_022);
+        //         }
+        //         sDisplayingDoorText = TRUE;
 
-                return FALSE;
-            }
+        //         return FALSE;
+        //     }
 
-            doorAction = ACT_UNLOCKING_KEY_DOOR;
-        }
+        //     doorAction = ACT_UNLOCKING_KEY_DOOR;
+        // }
 
         if (m->action == ACT_WALKING || m->action == ACT_DECELERATING) {
             actionArg = should_push_or_pull_door(m, o) + 0x00000004;
@@ -961,35 +961,36 @@ u32 get_door_save_file_flag(struct Object *door) {
     s16 isCcmDoor = door->oPosX < 0.0f;
     s16 isPssDoor = door->oPosY > 500.0f;
 
-    switch (requiredNumStars) {
-        case 1:
-            if (isPssDoor) {
-                saveFileFlag = SAVE_FLAG_UNLOCKED_PSS_DOOR;
-            } else {
-                saveFileFlag = SAVE_FLAG_UNLOCKED_WF_DOOR;
-            }
-            break;
+    // (REMOVED FOR METROID PRIME 64)
+    // switch (requiredNumStars) {
+    //     case 1:
+    //         if (isPssDoor) {
+    //             saveFileFlag = SAVE_FLAG_UNLOCKED_PSS_DOOR;
+    //         } else {
+    //             saveFileFlag = SAVE_FLAG_UNLOCKED_WF_DOOR;
+    //         }
+    //         break;
 
-        case 3:
-            if (isCcmDoor) {
-                saveFileFlag = SAVE_FLAG_UNLOCKED_CCM_DOOR;
-            } else {
-                saveFileFlag = SAVE_FLAG_UNLOCKED_JRB_DOOR;
-            }
-            break;
+    //     case 3:
+    //         if (isCcmDoor) {
+    //             saveFileFlag = SAVE_FLAG_UNLOCKED_CCM_DOOR;
+    //         } else {
+    //             saveFileFlag = SAVE_FLAG_UNLOCKED_JRB_DOOR;
+    //         }
+    //         break;
 
-        case 8:
-            saveFileFlag = SAVE_FLAG_UNLOCKED_BITDW_DOOR;
-            break;
+    //     case 8:
+    //         saveFileFlag = SAVE_FLAG_UNLOCKED_BITDW_DOOR;
+    //         break;
 
-        case 30:
-            saveFileFlag = SAVE_FLAG_UNLOCKED_BITFS_DOOR;
-            break;
+    //     case 30:
+    //         saveFileFlag = SAVE_FLAG_UNLOCKED_BITFS_DOOR;
+    //         break;
 
-        case 50:
-            saveFileFlag = SAVE_FLAG_UNLOCKED_50_STAR_DOOR;
-            break;
-    }
+    //     case 50:
+    //         saveFileFlag = SAVE_FLAG_UNLOCKED_50_STAR_DOOR;
+    //         break;
+    // }
 
     return saveFileFlag;
 }
@@ -1018,7 +1019,7 @@ u32 interact_door(struct MarioState *m, UNUSED u32 interactType, struct Object *
                 enterDoorAction = ACT_ENTERING_STAR_DOOR;
             }
 
-            if (doorSaveFileFlag != 0 && !(save_file_get_flags() & doorSaveFileFlag)) {
+            if (FALSE) { // doorSaveFileFlag != 0 && !(save_file_get_flags() & doorSaveFileFlag)
                 enterDoorAction = ACT_UNLOCKING_STAR_DOOR;
             }
 

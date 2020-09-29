@@ -770,22 +770,30 @@ void render_hud(void) {
             render_hud_holo3(SCREEN_WIDTH - 128,32,32,32,32,0);
             render_hud_holo5(SCREEN_WIDTH - 96,156,64,64,64,0);
 
-            s16 healthOffset = 0x613;
-            s16 healthTanks = 13;
+            s16 healthOffset = (gMarioState->totalETanks * 100) + 0xFF;
+            s16 healthTanks = gMarioState->totalETanks;
             while(gMarioState->health - healthOffset < 0) {
                 healthOffset -= 0x64;
                 healthTanks--;
             }
-            for (size_t i = 0; i < healthTanks; i++)
+            for (size_t i = 0; i < gMarioState->totalETanks; i++)
             {
                 u8 boxOffset = i * 5;
-                hud_display_box(128 + boxOffset,49,132 + boxOffset, 53,123,187, 196);
+                if(i < healthTanks) {
+                    // if i is less than the current amount of health (in terms of htanks) the player has, draw lit square
+                    hud_display_box(128 + boxOffset,49,132 + boxOffset, 53, 123, 187, 196); 
+                }else {
+                    // if i is greater (meaning the player has lost health and is below the max amount of htanks they can carry), draw unlit square
+                    hud_display_box(128 + boxOffset,49,132 + boxOffset, 53, 81, 124, 130);
+                }
+                
             }
 
 
             // Holo Middle
             render_hud_holo4(128,30,64,16,0,0);
-            hud_display_box(128,56, 128 + (64.0f * ((gMarioState->health - healthOffset) / 99.0f)), 56 + 4,123,187, 196);
+            hud_display_box(128,56, 128 + (64.0f * ((gMarioState->health - healthOffset) / 99.0f)), 56 + 4, 123, 187, 196); // displays lit part of bar
+            hud_display_box(192,56, 128 + (64.0f * ((gMarioState->health - healthOffset) / 99.0f)), 56 + 4, 81, 124, 130); // displays unlit part of bar
 
             // Helmet Left
             render_hud_helm2(32,224,128,16,0,0);

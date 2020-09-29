@@ -545,5 +545,6 @@ extern const BehaviorScript bhvUnusedFakeStar[];
 extern const BehaviorScript bhvArmCannon[];
 extern const BehaviorScript bhvArmCannonShot[];
 extern const BehaviorScript bhvIrisDoor[];
+extern const BehaviorScript bhvMorphBall[];
 
 #endif // BEHAVIOR_DATA_H

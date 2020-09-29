@@ -290,4 +290,8 @@ extern Gfx beam_fire_material_revert_render_settings[];
 #include "door_iris/anim_header.h"
 #include "door_iris/collision_header.h"
 
+#include "beam_power/geo_header.h"
+
+#include "morph_ball/geo_header.h"
+
 #endif

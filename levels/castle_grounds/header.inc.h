@@ -1,0 +1,37 @@
+extern const GeoLayout castle_grounds_area_1_geo[];
+extern const GeoLayout castle_grounds_dl_1_geo[];
+extern const GeoLayout castle_grounds_dl_2_geo[];
+extern const GeoLayout castle_grounds_dl_3_geo[];
+extern const GeoLayout castle_grounds_area_1[];
+extern const Collision castle_grounds_area_1_collision[];
+extern const u8 castle_grounds_area_1_collision_rooms[];
+extern const MacroObject castle_grounds_area_1_Area_1_macro_objs[];
+extern Vtx castle_grounds_dl_Room_1_Cube_mesh_vtx_0[32];
+extern Gfx castle_grounds_dl_Room_1_Cube_mesh_tri_0[];
+extern Vtx castle_grounds_dl_Room_1_Cube_mesh_vtx_1[8];
+extern Gfx castle_grounds_dl_Room_1_Cube_mesh_tri_1[];
+extern Vtx castle_grounds_dl_Room_1_Cube_mesh_vtx_2[16];
+extern Gfx castle_grounds_dl_Room_1_Cube_mesh_tri_2[];
+extern Vtx castle_grounds_dl_Room_2_Cube_mesh_vtx_0[28];
+extern Gfx castle_grounds_dl_Room_2_Cube_mesh_tri_0[];
+extern Vtx castle_grounds_dl_Room_2_Cube_mesh_vtx_1[8];
+extern Gfx castle_grounds_dl_Room_2_Cube_mesh_tri_1[];
+extern Vtx castle_grounds_dl_Room_2_Cube_mesh_vtx_2[12];
+extern Gfx castle_grounds_dl_Room_2_Cube_mesh_tri_2[];
+extern Vtx castle_grounds_dl_Room_Fake_Wall_2_mesh_vtx_0[4];
+extern Gfx castle_grounds_dl_Room_Fake_Wall_2_mesh_tri_0[];
+extern Vtx castle_grounds_dl_Room_Fake_Wall_2_mesh_vtx_1[4];
+extern Gfx castle_grounds_dl_Room_Fake_Wall_2_mesh_tri_1[];
+extern Vtx castle_grounds_dl_Room_3_Cube_mesh_vtx_0[8];
+extern Gfx castle_grounds_dl_Room_3_Cube_mesh_tri_0[];
+extern Vtx castle_grounds_dl_Room_3_Cube_mesh_vtx_1[20];
+extern Gfx castle_grounds_dl_Room_3_Cube_mesh_tri_1[];
+extern Vtx castle_grounds_dl_Room_3_Cube_mesh_vtx_2[20];
+extern Gfx castle_grounds_dl_Room_3_Cube_mesh_tri_2[];
+
+extern Gfx castle_grounds_dl_Room_1_Cube_mesh[];
+extern Gfx castle_grounds_dl_Room_2_Cube_mesh[];
+extern Gfx castle_grounds_dl_Room_Fake_Wall_2_mesh[];
+extern Gfx castle_grounds_dl_Room_3_Cube_mesh[];
+extern Gfx castle_grounds_dl_material_revert_render_settings[];
+

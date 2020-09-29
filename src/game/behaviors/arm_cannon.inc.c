@@ -81,7 +81,7 @@ void bhv_arm_cannon_shot_loop(void) {
     cur_obj_update_floor_and_walls();
     collisionFlags = object_step_without_floor_orient();
 
-    if(obj_attack_collided_from_other_object(o)) {
+    if(collisionFlags & 2 || collisionFlags & 1 || (o->oMoveFlags & (OBJ_MOVE_MASK_ON_GROUND | OBJ_MOVE_HIT_WALL)) || o->oTimer >= 120 || obj_attack_collided_from_other_object(o)) {
         spawn_mist_particles();
         obj_mark_for_deletion(o);
     }

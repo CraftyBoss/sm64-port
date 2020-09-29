@@ -240,35 +240,36 @@ void stub_level_update_1(void) {
 }
 
 void load_level_init_text(u32 arg) {
-    s32 gotAchievement;
-    u32 dialogID = gCurrentArea->dialog[arg];
+    // (REMOVED FOR METROID PRIME 64)
+    // s32 gotAchievement;
+    // u32 dialogID = gCurrentArea->dialog[arg];
 
-    switch (dialogID) {
-        case DIALOG_129:
-            gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP;
-            break;
+    // switch (dialogID) {
+    //     case DIALOG_129:
+    //         gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_VANISH_CAP;
+    //         break;
 
-        case DIALOG_130:
-            gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_METAL_CAP;
-            break;
+    //     case DIALOG_130:
+    //         gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_METAL_CAP;
+    //         break;
 
-        case DIALOG_131:
-            gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_WING_CAP;
-            break;
+    //     case DIALOG_131:
+    //         gotAchievement = save_file_get_flags() & SAVE_FLAG_HAVE_WING_CAP;
+    //         break;
 
-        case 255:
-            gotAchievement = TRUE;
-            break;
+    //     case 255:
+    //         gotAchievement = TRUE;
+    //         break;
 
-        default:
-            gotAchievement = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
-            break;
-    }
+    //     default:
+    //         gotAchievement = save_file_get_star_flags(gCurrSaveFileNum - 1, gCurrCourseNum - 1);
+    //         break;
+    // }
 
-    if (!gotAchievement) {
-        level_set_transition(-1, NULL);
-        create_dialog_box(dialogID);
-    }
+    // if (!gotAchievement) {
+    //     level_set_transition(-1, NULL);
+    //     create_dialog_box(dialogID);
+    // }
 }
 
 void init_door_warp(struct SpawnInfo *spawnInfo, u32 arg1) {
@@ -1303,6 +1304,7 @@ s32 lvl_set_current_level(UNUSED s16 arg0, s32 levelNum) {
     D_8032C9E0 = 0;
     gCurrLevelNum = levelNum;
     gCurrCourseNum = gLevelToCourseNumTable[levelNum - 1];
+	if (gCurrLevelNum == LEVEL_CASTLE_GROUNDS) return 0;
 	if (gCurrLevelNum == LEVEL_CASTLE_COURTYARD) return 0;
 
     if (gCurrDemoInput != NULL || gCurrCreditsEntry != NULL || gCurrCourseNum == COURSE_NONE) {

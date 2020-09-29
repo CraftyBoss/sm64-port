@@ -28,7 +28,7 @@ void water_level_pillar_undrained(void) {
                 if (sp1C->oAction > 1) {
                     o->oAction++;
 
-                    save_file_set_flags(SAVE_FLAG_MOAT_DRAINED);
+                    // save_file_set_flags(SAVE_FLAG_MOAT_DRAINED); (REMOVED FOR METROID PRIME 64)
                     play_puzzle_jingle();
                 }
             }
@@ -60,7 +60,7 @@ void water_level_pillar_drained(void) {
 }
 
 void bhv_water_level_pillar_init(void) {
-    if (save_file_get_flags() & SAVE_FLAG_MOAT_DRAINED)
+    if (TRUE) // save_file_get_flags() & SAVE_FLAG_MOAT_DRAINED (REMOVED FOR METROID PRIME 64)
         o->oWaterLevelPillarUnkF8 = 1;
 }
 
