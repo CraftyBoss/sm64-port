@@ -75,6 +75,7 @@ u32 interact_hoot(struct MarioState *, u32, struct Object *);
 u32 interact_cap(struct MarioState *, u32, struct Object *);
 u32 interact_grabbable(struct MarioState *, u32, struct Object *);
 u32 interact_text(struct MarioState *, u32, struct Object *);
+u32 interact_energytank(struct MarioState *, u32, struct Object *);
 
 struct InteractionHandler {
     u32 interactType;
@@ -105,7 +106,6 @@ static struct InteractionHandler sInteractionHandlers[] = {
     { INTERACT_BOUNCE_TOP,     interact_bounce_top },
     { INTERACT_DAMAGE,         interact_damage },
     { INTERACT_POLE,           interact_pole },
-    { INTERACT_HOOT,           interact_hoot },
     { INTERACT_BREAKABLE,      interact_breakable },
     { INTERACT_KOOPA,          interact_bounce_top },
     { INTERACT_KOOPA_SHELL,    interact_koopa_shell },
@@ -113,6 +113,7 @@ static struct InteractionHandler sInteractionHandlers[] = {
     { INTERACT_CAP,            interact_cap },
     { INTERACT_GRABBABLE,      interact_grabbable },
     { INTERACT_TEXT,           interact_text },
+    { INTERACT_ENERGYTANK,     interact_energytank },
 };
 
 static u32 sForwardKnockbackActions[][3] = {
@@ -1774,7 +1775,7 @@ void mario_process_interactions(struct MarioState *m) {
 
     if (!(m->action & ACT_FLAG_INTANGIBLE) && m->collidedObjInteractTypes != 0) {
         s32 i;
-        for (i = 0; i < 31; i++) {
+        for (i = 0; i < (sizeof(sInteractionHandlers) / sizeof(sInteractionHandlers[0])); i++) { // CHANGE BACK IF NOT NEEDED
             u32 interactType = sInteractionHandlers[i].interactType;
             if (m->collidedObjInteractTypes & interactType) {
                 struct Object *object = mario_get_collided_object(m, interactType);
@@ -1881,4 +1882,14 @@ void mario_handle_special_floors(struct MarioState *m) {
             }
         }
     }
+}
+
+
+u32 interact_energytank(struct MarioState *m, UNUSED u32 interactType, struct Object *o) {
+    u8 tankIndex = (o->oBehParams >> 24) & 0x1F;
+    save_file_set_etank_flags(tankIndex);
+    m->totalETanks = save_file_get_etank_count();
+    o->oInteractStatus = INT_STATUS_INTERACTED;
+    save_file_do_save(gCurrSaveFileNum - 1);
+    return FALSE;
 }

@@ -3890,7 +3890,7 @@ const BehaviorScript bhvHoot[] = {
     BEGIN(OBJ_LIST_POLELIKE),
     OR_INT(oFlags, (OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     LOAD_ANIMATIONS(oAnimations, hoot_seg5_anims_05005768),
-    SET_INT(oInteractType, INTERACT_HOOT),
+    SET_INT(oInteractType, INTERACT_DAMAGE),
     SET_HITBOX(/*Radius*/ 75, /*Height*/ 75),
     CALL_NATIVE(bhv_hoot_init),
     BEGIN_LOOP(),
@@ -6152,5 +6152,17 @@ const BehaviorScript bhvMorphBall[] = {
     BEGIN_LOOP(),
         SET_INT(oIntangibleTimer, 0),
         CALL_NATIVE(bhv_morph_ball_loop),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvETank[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    LOAD_ANIMATIONS(oAnimations, e_tank_anims),
+    ANIMATE(0),
+    CALL_NATIVE(bhv_init_room),
+    CALL_NATIVE(bhv_e_tank_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_e_tank_loop),
     END_LOOP(),
 };

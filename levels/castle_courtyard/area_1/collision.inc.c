@@ -1294,7 +1294,5 @@ const Collision castle_courtyard_area_1_collision[] = {
 	COL_TRI(463, 464, 465),
 	COL_TRI(463, 465, 466),
 	COL_TRI_STOP(),
-	COL_WATER_BOX_INIT(1),
-	COL_WATER_BOX(0x00, -5044, 1885, -1265, 5663, 46),
 	COL_END()
 };

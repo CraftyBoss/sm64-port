@@ -23,9 +23,9 @@ struct SaveFile
     // Note: the coordinates get set, but are never actually used, since the
     // cap can always be found in a fixed spot within the course
     u8 capLevel;
-    u8 eTankCount;
-    Vec3s capPos;
-
+    u16 eTankFlags;
+    u8 filler;
+    
     u32 flags;
 
     // Star flags for each course.
@@ -59,7 +59,6 @@ struct MainMenuSaveData
 #else
 #define SUBTRAHEND 6
 #endif
-
     // Pad to match the EEPROM size of 0x200 (10 bytes on JP/US, 8 bytes on EU)
     u8 filler[EEPROM_SIZE / 2 - SUBTRAHEND - NUM_SAVE_FILES * (4 + sizeof(struct SaveFile))];
 
@@ -150,7 +149,9 @@ void check_if_should_set_warp_checkpoint(struct WarpNode *warpNode);
 s32 check_warp_checkpoint(struct WarpNode *warpNode);
 
 u8 save_file_get_etank_count(void);
-void save_file_set_etank_count(u8 count);
+void save_file_set_etank_flags(u16 tankIndex);
+u32 save_file_get_etank_flags(void);
+void debug_save_file_reset_etanks(void);
 
 #ifdef VERSION_EU
 enum EuLanguages {

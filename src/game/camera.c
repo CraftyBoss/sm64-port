@@ -3060,6 +3060,7 @@ void update_camera(struct Camera *c) {
     sStatusFlags &= ~CAM_FLAG_FRAME_AFTER_CAM_INIT;
     if (gCameraMovementFlags & CAM_MOVE_INIT_CAMERA) {
         init_camera(c);
+        set_cam_angle(CAM_ANGLE_FIRST_PERSON);
         gCameraMovementFlags &= ~CAM_MOVE_INIT_CAMERA;
         sStatusFlags |= CAM_FLAG_FRAME_AFTER_CAM_INIT;
     }
@@ -3319,6 +3320,7 @@ void init_camera(struct Camera *c) {
     gPrevLevel = gCurrLevelArea / 16;
     gCurrLevelArea = gCurrLevelNum * 16 + gCurrentArea->index;
     sSelectionFlags &= CAM_MODE_MARIO_SELECTED;
+    sSelectionFlags |= CAM_MODE_FIRST_PERSON;
     sFramesPaused = 0;
     gLakituState.mode = c->mode;
     gLakituState.defMode = c->defMode;

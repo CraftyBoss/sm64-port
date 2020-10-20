@@ -566,6 +566,10 @@ void bhv_door_iris_loop(void);
 void bhv_morph_ball_init(void);
 void bhv_morph_ball_loop(void);
 
+// e tank
+void bhv_e_tank_init(void);
+void bhv_e_tank_loop(void);
+
 Gfx *geo_move_mario_part_from_parent(s32 run, UNUSED struct GraphNode *node, Mat4 mtx);
 
 // Bowser

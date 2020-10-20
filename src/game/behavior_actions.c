@@ -288,3 +288,4 @@ s32 set_obj_anim_with_accel_and_sound(s16 a0, s16 a1, s32 a2) {
 #include "behaviors/arm_cannon.inc.c"
 #include "behaviors/door_iris.inc.c"
 #include "behaviors/morph_ball.inc.c"
+#include "behaviors/e_tank.inc.c"

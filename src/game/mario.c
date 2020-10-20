@@ -1779,14 +1779,11 @@ void first_person_handler(struct MarioState *m) {
             m->healCounter = 10;
         }else if(m->controller->buttonDown & D_JPAD) {
             m->hurtCounter = 10;
-        }else if(m->controller->buttonPressed & L_JPAD) {
-            m->totalETanks -= 1;
-            save_file_set_etank_count(m->totalETanks);
+        }else if(m->controller->buttonDown & R_JPAD) {
+            debug_save_file_reset_etanks();
             save_file_do_save(gCurrSaveFileNum - 1);
-        }else if(m->controller->buttonPressed & R_JPAD) {
-            m->totalETanks += 1;
-            save_file_set_etank_count(m->totalETanks);
-            save_file_do_save(gCurrSaveFileNum - 1);
+        }else if(m->controller->buttonDown & L_JPAD) {
+            // debug button
         }
         
         //print_text_fmt_int(140,60, ", cur room %d", gMarioCurrentRoom);

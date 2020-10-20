@@ -555,13 +555,45 @@ s32 save_file_get_cap_pos(Vec3s capPos) {
 
 u8 save_file_get_etank_count(void) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
-    return saveFile->eTankCount;
+    u32 tankFlag = 1;
+    u8 count = 0;
+    u8 i;
+    for (i = 0; i < 14; i++, tankFlag <<= 1)
+    {
+        if(saveFile->eTankFlags & tankFlag) {
+            count++;
+        }
+    }
+    return count;
 }
 
-void save_file_set_etank_count(u8 count) {
+void debug_save_file_reset_etanks(void) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
-    saveFile->eTankCount = count;
-    gSaveFileModified = TRUE;
+    u32 tankFlag = 1;
+    u8 i;
+    for (i = 0; i < 14; i++, tankFlag <<= 1)
+    {
+        if(saveFile->eTankFlags & tankFlag) {
+            saveFile->eTankFlags &= ~tankFlag;
+            gSaveFileModified = TRUE;
+        }
+    }
+}
+
+u32 save_file_get_etank_flags(void) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    return saveFile->eTankFlags;
+}
+
+void save_file_set_etank_flags(u16 tankIndex) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    u16 tankFlag = 1 << tankIndex;
+    if(!(saveFile->eTankFlags & tankFlag)) {
+        saveFile->eTankFlags |= tankFlag;
+        gSaveBuffer.files[gCurrSaveFileNum - 1][0].flags |= SAVE_FLAG_FILE_EXISTS;
+        gSaveFileModified = TRUE;
+    }
+    
 }
 
 void save_file_set_sound_mode(u16 mode) {

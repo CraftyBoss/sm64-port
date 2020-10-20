@@ -294,4 +294,8 @@ extern Gfx beam_fire_material_revert_render_settings[];
 
 #include "morph_ball/geo_header.h"
 
+#include "e_tank/geo_header.h"
+
+
+#include "e_tank/anim_header.h"
 #endif

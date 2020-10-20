@@ -35,3 +35,4 @@
 #include "beam_fire/geo.inc.c"
 #include "door_iris/geo.inc.c"
 #include "morph_ball/geo.inc.c"
+#include "e_tank/geo.inc.c"

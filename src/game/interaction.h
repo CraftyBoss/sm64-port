@@ -5,7 +5,7 @@
 
 #include "types.h"
 
-#define INTERACT_HOOT           /* 0x00000001 */ (1 <<  0)
+#define INTERACT_ENERGYTANK     /* 0x00000001 */ (1 <<  0) // replaces INTERACT_HOOT
 #define INTERACT_GRABBABLE      /* 0x00000002 */ (1 <<  1)
 #define INTERACT_DOOR           /* 0x00000004 */ (1 <<  2)
 #define INTERACT_DAMAGE         /* 0x00000008 */ (1 <<  3)

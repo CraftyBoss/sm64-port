@@ -573,6 +573,7 @@
 #define MODEL_BEAM_FIRE                   0xF4        // beam_fire_geo
 #define MODEL_IRIS_DOOR                   0xF5        // door_iris_geo
 #define MODEL_MORPH_BALL                  0xF6        // morph_ball_geo
+#define MODEL_E_TANK                      0xF7        // e_tank_geo
 
 // Menu Models (overwrites Level Geometry IDs)
 #define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0

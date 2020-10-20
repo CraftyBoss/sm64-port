@@ -93,3 +93,6 @@ UNUSED static const u64 binid_18 = 18;
 #include "door_iris/anims/table.inc.c"
 #include "door_iris/collision.inc.c"
 #include "morph_ball/model.inc.c"
+#include "e_tank/model.inc.c"
+#include "e_tank/anims/data.inc.c"
+#include "e_tank/anims/table.inc.c"
